@@ -29,7 +29,9 @@ def DetectLines(line_img):
     dilation = cv2.dilate(thresh, rect_kernel, iterations = 1)
     contours_initial, hierarchy = cv2.findContours(dilation, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
     
-    Detected_Words = []
+    im2 = input_image.copy()
+    
+    Detected_Lines = []
     # sort the contours
     for method in ("right-to-left","top-to-bottom"):
 	    contours_initial, boundingBoxes = contours.sort_contours(contours_initial, method=method)
@@ -37,12 +39,18 @@ def DetectLines(line_img):
             x, y, w, h = cv2.boundingRect(cnt)
             fx = x+w
             fy = y+h
-            
+            cv2.rectangle(im2, (x, y), (fx, fy), (255, , 0), 2)
             trial_image = input_image[y:fy,x:fx]
             trial_image[trial_image < 255] = 0
-            trial_image = 255 - trial_image
+            #trial_image = 255 - trial_image
             Detected_Words.append(trial_image)
-    return Detected_Words
+    cv2.imshow("Line",im2)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+    
+    return Detected_Lines
+
+
 
 
 def DetectWords(line_img):
