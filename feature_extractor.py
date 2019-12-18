@@ -44,3 +44,23 @@ def DetectWords(line_img):
             Detected_Words.append(trial_image)
     return Detected_Words
 
+
+def BaselineDetection(line_img):
+    PV = []
+    BLI = 0
+    _,thresh_img = cv2.threshold(line,127,255,cv2.THRESH_OTSU|cv2.THRESH_BINARY_INV)
+    thresh_img = np.asarray(thresh_img)
+
+    HP = getHorizontalProjection(thresh_img)
+    PV_Indices = (HP > np.roll(HP,1)) & (HP > np.roll(HP,-1))
+    
+    for i in range(len(PV_Indices)):
+        if PV_Indices[i] == True:
+            PV.append(HP[i])
+    MAX = max(PV)
+    
+    for i in range(len(HP)):
+        if HP[i] == MAX:
+            BLI = i
+            
+    return BLI
