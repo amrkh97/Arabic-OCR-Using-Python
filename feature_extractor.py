@@ -45,7 +45,7 @@ def DetectWords(line_img):
     return Detected_Words
 
 
-def BaselineDetection(line_img):
+def BaselineDetection(line_img): #4
     PV = []
     BLI = 0
     _,thresh_img = cv2.threshold(line,127,255,cv2.THRESH_OTSU|cv2.THRESH_BINARY_INV)
@@ -64,3 +64,24 @@ def BaselineDetection(line_img):
             BLI = i
             
     return BLI
+
+def FindingMaximumTransitions(line_img, BLI): #5
+    MaxTransitions = 0
+    MTI = BLI
+    i = BLI
+    while i < line_img.shape[0]:
+        CurrentTransitions = 0
+        FLAG = 0
+        j = 1
+        while j < line_img.shape[1]:
+            if line_img[i,j]==255 and FLAG == 0:
+                CurrentTransitions += 1
+                FLAG = 1
+            elif line_img[i,j]!=255 and FLAG == 1:
+                FLAG = 0
+        #END WHILE
+        if CurrentTransitions >= MaxTransitions:
+             MaxTransitions = CurrentTransitions
+             MTI = i
+    #END WHILE    
+    return MTI
