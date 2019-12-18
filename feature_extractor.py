@@ -22,6 +22,29 @@ def getVerticalProjection(img):
 def getHorizontalProjection(img):
     return (np.sum(img, axis = 1))//255
 
+def DetectLines(line_img):
+    input_image = correct_skew(line_img) 
+    _,thresh = cv2.threshold(input_image, 127, 255,cv2.THRESH_OTSU|cv2.THRESH_BINARY_INV)
+    rect_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 10))
+    dilation = cv2.dilate(thresh, rect_kernel, iterations = 1)
+    contours_initial, hierarchy = cv2.findContours(dilation, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+    
+    Detected_Words = []
+    # sort the contours
+    for method in ("right-to-left","top-to-bottom"):
+	    contours_initial, boundingBoxes = contours.sort_contours(contours_initial, method=method)
+    for cnt in contours_initial:
+            x, y, w, h = cv2.boundingRect(cnt)
+            fx = x+w
+            fy = y+h
+            
+            trial_image = input_image[y:fy,x:fx]
+            trial_image[trial_image < 255] = 0
+            trial_image = 255 - trial_image
+            Detected_Words.append(trial_image)
+    return Detected_Words
+
+
 def DetectWords(line_img):
     input_image = correct_skew(line_img) 
     _,thresh = cv2.threshold(input_image, 127, 255,cv2.THRESH_OTSU|cv2.THRESH_BINARY_INV)
@@ -85,3 +108,11 @@ def FindingMaximumTransitions(line_img, BLI): #5
              MTI = i
     #END WHILE    
     return MTI
+
+#WIP:
+def CutPointIdentification(line_img,BLI,MTI):
+
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT,(3,3))
+    openingImage = cv2.morphologyEx(line_img, cv2.MORPH_OPEN, kernel)
+    VP = getVerticalProjection(line_img)
+    pass
