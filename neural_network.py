@@ -7,7 +7,7 @@ from torchvision import datasets, transforms
 
 def createNN(_inputSize):
     input_size = _inputSize
-    hidden_sizes = [400, 200, 100] # 400 nodes in first hidden layer -> 200 in second -> 100 in third
+    hidden_sizes = [450, 250] # 450 nodes in first hidden layer -> 250 in second
     output_size = 29 # Number of possible outputs
 
     dev = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu") # Defining our GPU device
@@ -15,9 +15,7 @@ def createNN(_inputSize):
                           nn.ReLU(),
                           nn.Linear(hidden_sizes[0], hidden_sizes[1]),
                           nn.ReLU(),
-                          nn.Linear(hidden_sizes[1], hidden_sizes[2]),
-                          nn.ReLU(),
-                          nn.Linear(hidden_sizes[2], output_size)).to(dev)
+                          nn.Linear(hidden_sizes[1], output_size)).to(dev)
     model.cuda(dev) # Making our model run on the GPU
     print(model)
     return model,dev
