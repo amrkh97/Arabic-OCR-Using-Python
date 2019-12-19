@@ -41,7 +41,7 @@ for line in len_words:
     word = word * 255
     MFV = stats.mode(word.tolist())[0][0]
     
-    TrueCuts = FE.algo7(line,word,CPI,BLI,MTI,MFV)
+    TrueCuts = FE.algo7(line,word,SRL,BLI,MTI,MFV)
     for i in range (len(TrueCuts)):
         word[:,TrueCuts[i]] = 150
     show_images([word])
