@@ -148,22 +148,26 @@ def CutPointIdentification(line, word, MTI): #6
     i = 1
     FLAG = 0
     LineImage = open(line)
-    VP = getVerticalProjection(line)
+    print(LineImage)
+    VP = getVerticalProjection(LineImage)
+    print(VP)
     MFV = stats.mode(VP.tolist())[0][0]
     SeaparationRegions = []
     # print(word)
-    while i <= word.shape[1] - 1:
+    while i <= word.shape[1]:
         # Line 8
         if word[MTI, i] == 1 and FLAG == 0:
             SR = SeaparationRegion()
             SR.setEndIndex(i)
             FLAG = 1
+        if i == (word.shape[1] - 1):
+            break
         # Line 12
         elif word[MTI, i] != 1 and FLAG == 1:
             SR.setStartIndex(i)
             MidIndex = int((SR.EndIndex + SR.StartIndex)/2)
             VP = np.array(VP)
-
+            # k is an array of indices
             k_equal_zero = np.where(VP[SR.StartIndex:SR.EndIndex] == 0)
             k_equal_zero = k_equal_zero[0]
             
@@ -172,7 +176,6 @@ def CutPointIdentification(line, word, MTI): #6
 
             k_less_than_MFV = np.where(VP[SR.StartIndex:SR.EndIndex] <= MFV)
             k_less_than_MFV = k_less_than_MFV[0]
-            # k is an array of indices
             
             # Line 15
             if len(k_equal_zero) != 0:
@@ -181,6 +184,7 @@ def CutPointIdentification(line, word, MTI): #6
                 SR.setCutIndex(MidIndex)
             # Line 20
             elif len(k_less_than_MFV_EndIndex) != 0:
+                # TODO: Fix Error
                 SR.setCutIndex(find_nearest(k_less_than_MFV_EndIndex, MidIndex))
             # Line 23
             elif len(k_less_than_MFV) != 0:

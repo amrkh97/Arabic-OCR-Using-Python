@@ -17,14 +17,13 @@ len_words = FE.DetectLines(input_image)
 
 i=0
 for line in len_words:
-    
-    #showImage(line)
+    # showImage(line)
     BLI = FE.BaselineDetection(line)
     MTI = FE.FindingMaximumTransitions(line, BLI)
     lineBGR = FE.returnToBGR(line)
-    #cv2.line(lineBGR, (0,BLI), (lineBGR.shape[1],BLI), (255,0,0), 1) 
-    #cv2.line(lineBGR, (0,MTI), (lineBGR.shape[1],MTI), (0,255,0), 1) 
-    #showImage(lineBGR)
+    # cv2.line(lineBGR, (0,BLI), (lineBGR.shape[1],BLI), (255,0,0), 1) 
+    # cv2.line(lineBGR, (0,MTI), (lineBGR.shape[1],MTI), (0,255,0), 1) 
+    # showImage(lineBGR)
     print("Line: {} --> BLI: {}, MTI: {}".format(i,BLI,MTI))
     i += 1
     Detected_Words = np.flip(FE.DetectWords(line))
@@ -36,16 +35,20 @@ for line in len_words:
     
     for j in range(len(CPI)):
         word[MTI,int(CPI[j].CutIndex)] = 120
-        
+      
     show_images([word])
     '''
     word = Detected_Words[0]
     _, word = cv2.threshold(word, 127, 255, cv2.THRESH_BINARY_INV)
     word = word//255
+    _, line = cv2.threshold(line, 127, 255, cv2.THRESH_BINARY_INV)
+    line = line//255
     CPI = FE.CutPointIdentification(line, word, MTI) # Algorithm 6
-    print(len(CPI))
-    word = word*255
+    line = line * 255
+    word = word * 255
+    # print(word.shape)
     for i in range (len(CPI)):
+        # print(CPI[i].CutIndex)
         word[:,int(CPI[i].CutIndex)] = 150
     show_images([word])
     
