@@ -315,8 +315,9 @@ def CutPointIdentification(line, word, MTI): #6
         i += 1
     return SeaparationRegions
 #WIP
-def algo7(line,word,srl,baselineIndex,maxtransisitionIndex,mfv):
+def algo7(line,Word,srl,baselineIndex,maxtransisitionIndex,mfv):
     i = 0
+    word = np.copy(Word)
     while i < len(srl):
         sr = srl[i]
         validsaperationRegion = []
@@ -382,10 +383,5 @@ def algo7(line,word,srl,baselineIndex,maxtransisitionIndex,mfv):
                     i+=3
                 if CheckStroke(word,sr,srl[i+2].CutIndex, sr.CutIndex[i+1], srl[i].CutIndex,maxtransisitionIndex,baselineIndex) and ((DetectDots(word,srl[i+1].CutIndex, srl[i+2].CutIndex) == False) or (DetectDots(word,srl[i+1].CutIndex, srl[i+2].CutIndex))):
                     i += 1
-        else:
-            i += 1
-    return validsaperationRegion
         
-
-
-
+    return validsaperationRegion

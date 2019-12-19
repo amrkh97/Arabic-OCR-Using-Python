@@ -20,7 +20,7 @@ i=0
 for line in len_words:
     BLI = FE.BaselineDetection(line)
     MTI = FE.FindingMaximumTransitions(line, BLI)
-    lineBGR = FE.returnToBGR(line)
+    # lineBGR = FE.returnToBGR(line)
     # cv2.line(lineBGR, (0,BLI), (lineBGR.shape[1],BLI), (255,0,0), 1) 
     # cv2.line(lineBGR, (0,MTI), (lineBGR.shape[1],MTI), (0,255,0), 1) 
     # showImage(lineBGR)
@@ -33,17 +33,19 @@ for line in len_words:
         word = threshold(word)
         SRL = FE.CutPointIdentification(line, word, MTI) # Algorithm 6
         word = word * 255
-        for i in range (len(SRL)):
-            word[:,int(SRL[i].CutIndex)] = 150
-        show_images([word])
-    
+        
     line = line * 255
     word = word * 255
     MFV = stats.mode(word.tolist())[0][0]
     
     TrueCuts = FE.algo7(line,word,SRL,BLI,MTI,MFV)
+    
+    #wordBGR = FE.returnToBGR(word)
+     
     for i in range (len(TrueCuts)):
-        word[:,TrueCuts[i]] = 150
+        word[:,int(TrueCuts[i].CutIndex)-1] = 0
+        #cv2.line(wordBGR, (int(TrueCuts[i].CutIndex)-1,0), (int(TrueCuts[i].CutIndex)-1,wordBGR.shape[0],), (255,0,0), 1) 
+    
     show_images([word])
     
     
