@@ -72,11 +72,10 @@ def DetectWords(line_img):
             fy = y+h
             
             trial_image = input_image[y:fy,x:fx]
-            #trial_image[trial_image < 255] = 0
-            #trial_image = 255 - trial_image
-            cv2.imshow("Detected Word",trial_image)
-            cv2.waitKey(0)
-            cv2.destroyAllWindows()
+            
+            #cv2.imshow("Detected Word",trial_image)
+            #cv2.waitKey(0)
+            #cv2.destroyAllWindows()
     
             Detected_Words.append(trial_image)
     return Detected_Words
@@ -86,7 +85,6 @@ def BaselineDetection(line_img): #4
     BLI = 0
     _,thresh_img = cv2.threshold(line_img,127,255,cv2.THRESH_BINARY_INV)
     thresh_img = np.asarray(thresh_img)
-    #thresh_img = thresh_img // 255
     
     HP = getHorizontalProjection(thresh_img)
     PV_Indices = (HP > np.roll(HP,1)) & (HP > np.roll(HP,-1))
@@ -124,6 +122,10 @@ def FindingMaximumTransitions(line_img, BLI): #5
         i += 1
     #END WHILE    
     return MTI
+
+
+def returnToBGR(image):
+    return cv2.cvtColor(image,cv2.COLOR_GRAY2RGB)
 
 
 #WIP:
