@@ -29,11 +29,8 @@ for line in len_words:
     Detected_Words = np.flip(FE.DetectWords(line))
     word = Detected_Words[0]
     #W = FE.removeDots(word)
-    
-    _, word = cv2.threshold(word, 127, 255, cv2.THRESH_BINARY_INV)
-    word = word//255
-    _, line = cv2.threshold(line, 127, 255, cv2.THRESH_BINARY_INV)
-    line = line//255
+    line = threshold(line)
+    word = threshold(word)
     CPI = FE.CutPointIdentification(line, word, MTI) # Algorithm 6
     line = line * 255
     word = word * 255
