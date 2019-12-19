@@ -21,3 +21,9 @@ def show_images(images,titles=None):
         n += 1
     fig.set_size_inches(np.array(fig.get_size_inches()) * n_ims)
     plt.show()
+
+def threshold(img):
+    thresholded = np.copy(img)
+    _, thresholded = cv2.threshold(thresholded, 127, 255, cv2.THRESH_BINARY_INV)
+    thresholded = thresholded//255
+    return thresholded

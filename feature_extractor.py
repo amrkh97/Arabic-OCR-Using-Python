@@ -4,6 +4,7 @@ import numpy as np
 from scipy import stats
 from imutils import contours
 from scipy import ndimage
+from word2subwords import *
 
 ###################Common Functions#################
 
@@ -20,6 +21,11 @@ class SeaparationRegion:
 
     def setCutIndex(self, i):
         self.CutIndex = i
+
+def removeDots(img):
+    copy_img = img.copy()
+    subword_cnts = string2subwords(copy_img, delete_diacritics=True)
+    return draw_subwords(copy_img.shape, subword_cnts)
 
 def open(line):
     line_copy = np.copy(line)
@@ -62,22 +68,13 @@ def pathBetweenStartandEnd(vp):
     return False
 def Count_connected_parts(img):  # this function returns the number of connected parts given the binary image of any letter
     labeled, nr_objects = ndimage.label(img > 0)  # 100 is the threshold but in case of binary image given (0,1) it will change
-    # print(nr_objects)
-    # print("Number of objects is {}".format(nr_objects))
     return nr_objects
 
 
 def count_holes(img, num_connected_parts):  # count number of holes in each character
-    # gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    # gray = np.copy(img)
-    # kernel = np.ones((3,3),np.float32)/9
-    # dst = cv2.filter2D(gray,-1,kernel)
-    # print(img)
-    # ret,thresh1 = cv2.threshold(img,50,255,cv2.THRESH_BINARY)
-
     contours, hierarchy = cv2.findContours(img, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
-    # print("y= ",len(contours)-1-num_connected_parts)
     return abs(len(contours) - num_connected_parts)
+
 def DetectBaselineBetweenStartAndEnd(Word, BLI, Start, End):#End is left
     if np.sum( Word[BLI,End:Start] ) == 0:
         return True #no path found
@@ -99,6 +96,7 @@ def CheckLine19Alg7(SRL,SR, NextCutIndex, VP, Word,MTI,BLI):
     if ( SR==SRL[0] and VP[NextCutIndex] == 0) or ( Dist1 < (0.5*Dist2) ) :
         return True
     return False
+
 def CheckStroke(Word, SR,NextCut, CurrentCut, PreviousCut, MTI,BLI):
     HPAbove = getHorizontalProjection( Word[0:BLI,:] )
     HPBelow = getHorizontalProjection( Word[BLI:,:] )  
@@ -126,6 +124,7 @@ def CheckStroke(Word, SR,NextCut, CurrentCut, PreviousCut, MTI,BLI):
     if (SHPA > SHPB) and (Dist1 < (2*SecondPeakValue) ) and (HPMode == MFV) and (~Holes) :
         return True
     return False
+
 def DetectHoles(Word, NextCut, CurrentCut, PreviousCut, MTI):#next is left, previous is right
     LefPixelIndex = 0
     for i in range(NextCut, PreviousCut, 1):
@@ -165,6 +164,7 @@ def DetectDots(word, start_index, end_index):
         if sume%4 == 0:
             return True
     return False
+
 ####################################################
 
 def DetectLines(line_img):
@@ -259,22 +259,23 @@ def CutPointIdentification(line, word, MTI): #6
     i = 1
     FLAG = 0
     LineImage = open(line)
-    VP = getVerticalProjection(line)
+    VP = getVerticalProjection(LineImage)
     MFV = stats.mode(VP.tolist())[0][0]
     SeaparationRegions = []
-    # print(word)
-    while i <= word.shape[1] - 1:
+    while i <= word.shape[1]:
         # Line 8
         if word[MTI, i] == 1 and FLAG == 0:
             SR = SeaparationRegion()
             SR.setEndIndex(i)
             FLAG = 1
+        if i == (word.shape[1] - 1):
+            break
         # Line 12
         elif word[MTI, i] != 1 and FLAG == 1:
             SR.setStartIndex(i)
             MidIndex = int((SR.EndIndex + SR.StartIndex)/2)
             VP = np.array(VP)
-
+            # k is an array of indices
             k_equal_zero = np.where(VP[SR.StartIndex:SR.EndIndex] == 0)
             k_equal_zero = k_equal_zero[0]
             
@@ -283,7 +284,6 @@ def CutPointIdentification(line, word, MTI): #6
 
             k_less_than_MFV = np.where(VP[SR.StartIndex:SR.EndIndex] <= MFV)
             k_less_than_MFV = k_less_than_MFV[0]
-            # k is an array of indices
             
             # Line 15
             if len(k_equal_zero) != 0:
@@ -292,6 +292,7 @@ def CutPointIdentification(line, word, MTI): #6
                 SR.setCutIndex(MidIndex)
             # Line 20
             elif len(k_less_than_MFV_EndIndex) != 0:
+                # TODO: Fix Error
                 SR.setCutIndex(find_nearest(k_less_than_MFV_EndIndex, MidIndex))
             # Line 23
             elif len(k_less_than_MFV) != 0:
