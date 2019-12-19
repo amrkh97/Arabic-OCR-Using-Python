@@ -320,12 +320,13 @@ def algo7(line,word,srl,baselineIndex,maxtransisitionIndex,mfv):
             validsaperationRegion.append(sr)
             i += 1
         elif  i !=0:
-            Previous_sr = srl[i-1]
-            Next_sr = srl[i+1]
-            labels = Count_connected_parts(word[:, Previous_sr.CutIndex:Next_sr.CutIndex])
-            numberHoles = count_holes(word[:, Previous_sr.CutIndex:Next_sr.CutIndex],labels)
-            if numberHoles != 0:
-                i += 1
+            if (i+1) < len(srl):
+                Previous_sr = srl[i-1]
+                Next_sr = srl[i+1]
+                labels = Count_connected_parts(word[:, Previous_sr.CutIndex:Next_sr.CutIndex])
+                numberHoles = count_holes(word[:, Previous_sr.CutIndex:Next_sr.CutIndex],labels)
+                if numberHoles != 0:
+                    i += 1
         elif DetectBaselineBetweenStartAndEnd(word,baselineIndex, sr.EndIndex, sr.StartIndex):
             SHPB = len(getHorizontalProjection(word[0: baselineIndex,:]))
             SHPA = len(getHorizontalProjection(word[baselineIndex:,:]))
