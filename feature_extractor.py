@@ -259,6 +259,18 @@ def CutPointIdentification(line, word, MTI): #6
     VP = getVerticalProjection(LineImage)
     MFV = stats.mode(VP.tolist())[0][0]
     SeaparationRegions = []
+    BeginIndex = 0
+    EndIndex = len(VP)
+    for i in VP:
+        if i == 0:
+            BeginIndex+=1
+
+    for i in range(-1,-30,-1):
+        if VP[i] == 0:
+            EndIndex -= 1
+
+    VP = VP[BeginIndex:EndIndex]
+
     while i <= word.shape[1]:
         # Line 8
         if word[MTI, i] == 1 and FLAG == 0:

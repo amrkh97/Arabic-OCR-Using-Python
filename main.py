@@ -30,10 +30,10 @@ for line in len_words:
     line = threshold(line)
     for word in Detected_Words:        
         word = threshold(word)
-        CPI = FE.CutPointIdentification(line, word, MTI) # Algorithm 6
+        SRL = FE.CutPointIdentification(line, word, MTI) # Algorithm 6
         word = word * 255
-        for i in range (len(CPI)):
-            word[:,int(CPI[i].CutIndex)] = 150
+        for i in range (len(SRL)):
+            word[:,int(SRL[i].CutIndex)] = 150
         show_images([word])
     
     line = line * 255
