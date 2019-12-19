@@ -155,11 +155,15 @@ def DetectHoles(Word, NextCut, CurrentCut, PreviousCut, MTI):#next is left, prev
         return True
     else:
         return False
-def DetectDots(PrevImg,NextImg):
-    dif = PrevImg - NextImg
-    count = np.count_nonzero(dif)
-    if count != 0:
-        return True
+def DetectDots(word, start_index, end_index):
+    HP = getHorizontalProjection[word[start_index:end_index, :]]
+    for H in HP:
+        H[H>0] = 1
+        diffArray = np.diff(H)
+        absolute = np.absolute(diffArray)
+        sume = np.sum(absolute)
+        if sume%4 == 0:
+            return True
     return False
 ####################################################
 
@@ -339,18 +343,17 @@ def algo7(line,word,srl,baselineIndex,maxtransisitionIndex,mfv):
         elif CheckStroke(word,sr,srl[i+1].CutIndex ,sr.CutIndex ,srl[i-1].CutIndex,maxtransisitionIndex,baselineIndex):
             validsaperationRegion.append(sr)
             i+=1
-        #getImgWithoutDots = getwithout()
-        elif CheckStroke(word,sr,srl[i+1].CutIndex ,sr.CutIndex ,srl[i-1].CutIndex,maxtransisitionIndex,baselineIndex) and DetectDots(word[:, sr.CutIndex: srl[i+1].CutIndex]):
+        elif CheckStroke(word,sr,srl[i+1].CutIndex ,sr.CutIndex ,srl[i-1].CutIndex,maxtransisitionIndex,baselineIndex) and DetectDots(word,sr.CutIndex, srl[i+1].CutIndex):
             validsaperationRegion.append(sr)
             i+=1
-        elif CheckStroke(word,sr,srl[i+1].CutIndex ,sr.CutIndex ,srl[i-1].CutIndex,maxtransisitionIndex,baselineIndex) and (DetectDots(word[:, sr.CutIndex: srl[i+1].CutIndex]) == False):
-            if CheckStroke(word,sr,srl[i+2].CutIndex, sr.CutIndex[i+1], srl[i].CutIndex,maxtransisitionIndex,baselineIndex) and (DetectDots(word[:, srl[i+1].CutIndex: srl[i+2].CutIndex]) == False):
+        elif CheckStroke(word,sr,srl[i+1].CutIndex ,sr.CutIndex ,srl[i-1].CutIndex,maxtransisitionIndex,baselineIndex) and (DetectDots(word,sr.CutIndex, srl[i+1].CutIndex) == False):
+            if CheckStroke(word,sr,srl[i+2].CutIndex, sr.CutIndex[i+1], srl[i].CutIndex,maxtransisitionIndex,baselineIndex) and (DetectDots(word,srl[i+1].CutIndex, srl[i+2].CutIndex) == False):
                 validsaperationRegion.append(sr)
                 i+=3
-            if (CheckStroke(word,sr,srl[i+2].CutIndex, sr.CutIndex[i+1], srl[i].CutIndex,maxtransisitionIndex,baselineIndex) and (DetectDots(word[:, srl[i+1].CutIndex: srl[i+2].CutIndex]))) and (CheckStroke(word,sr,srl[i+3].CutIndex, sr.CutIndex[i+2], srl[i+1].CutIndex,maxtransisitionIndex,baselineIndex) and (DetectDots(word[:, srl[i+2].CutIndex: srl[i+3].CutIndex])) == False):
+            if (CheckStroke(word,sr,srl[i+2].CutIndex, sr.CutIndex[i+1], srl[i].CutIndex,maxtransisitionIndex,baselineIndex) and (DetectDots(word,srl[i+1].CutIndex, srl[i+2].CutIndex))) and (CheckStroke(word,sr,srl[i+3].CutIndex, sr.CutIndex[i+2], srl[i+1].CutIndex,maxtransisitionIndex,baselineIndex) and (DetectDots(word,srl[i+2].CutIndex, srl[i+3].CutIndex)) == False):
                 validsaperationRegion.append(sr)
                 i+=3
-            if CheckStroke(word,sr,srl[i+2].CutIndex, sr.CutIndex[i+1], srl[i].CutIndex,maxtransisitionIndex,baselineIndex) and ((DetectDots(word[:, srl[i+1].CutIndex: srl[i+2].CutIndex]) == False) or (DetectDots(word[:, srl[i+1].CutIndex: srl[i+2].CutIndex]))):
+            if CheckStroke(word,sr,srl[i+2].CutIndex, sr.CutIndex[i+1], srl[i].CutIndex,maxtransisitionIndex,baselineIndex) and ((DetectDots(word,srl[i+1].CutIndex, srl[i+2].CutIndex) == False) or (DetectDots(word,srl[i+1].CutIndex, srl[i+2].CutIndex))):
                 i += 1
     return validsaperationRegion
         
