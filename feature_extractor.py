@@ -279,7 +279,7 @@ def CutPointIdentification(line, word, MTI): #6
             k_less_than_MFV_EndIndex = np.where(VP <= MFV) and np.where(VP < SR.EndIndex)
             k_less_than_MFV_EndIndex = k_less_than_MFV_EndIndex[0]
 
-            k_less_than_MFV = np.where(VP[SR.StartIndex:SR.EndIndex] <= MFV)
+            k_less_than_MFV = np.where(VP[SR.EndIndex:SR.StartIndex] <= MFV)
             k_less_than_MFV = k_less_than_MFV[0]
             
             # Line 15
@@ -289,7 +289,6 @@ def CutPointIdentification(line, word, MTI): #6
                 SR.setCutIndex(MidIndex)
             # Line 20
             elif len(k_less_than_MFV_EndIndex) != 0:
-                # TODO: Fix Error
                 SR.setCutIndex(find_nearest(k_less_than_MFV_EndIndex, MidIndex))
             # Line 23
             elif len(k_less_than_MFV) != 0:

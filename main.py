@@ -17,7 +17,6 @@ len_words = FE.DetectLines(input_image)
 
 i=0
 for line in len_words:
-    
     BLI = FE.BaselineDetection(line)
     MTI = FE.FindingMaximumTransitions(line, BLI)
     lineBGR = FE.returnToBGR(line)
@@ -27,16 +26,16 @@ for line in len_words:
     print("Line: {} --> BLI: {}, MTI: {}".format(i,BLI,MTI))
     i += 1
     Detected_Words = np.flip(FE.DetectWords(line))
-    word = Detected_Words[0]
-    #W = FE.removeDots(word)
+    # W = FE.removeDots(word)
     line = threshold(line)
-    word = threshold(word)
-    CPI = FE.CutPointIdentification(line, word, MTI) # Algorithm 6
-    line = line * 255
-    word = word * 255
-
-    for i in range (len(CPI)):
-        word[:,int(CPI[i].CutIndex)] = 150
-    show_images([word])
+    for word in Detected_Words:        
+        word = threshold(word)
+        CPI = FE.CutPointIdentification(line, word, MTI) # Algorithm 6
+        word = word * 255
+        for i in range (len(CPI)):
+            word[:,int(CPI[i].CutIndex)] = 150
+        show_images([word])
     
+    line = line * 255
+
 print("Running Time In Seconds: {0:.3f}".format(time.time() - start_time))
