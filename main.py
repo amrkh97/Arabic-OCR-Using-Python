@@ -9,7 +9,7 @@ start_time = time.time()
 
 ###################################################################
 
-input_image = cv2.imread("./Pattern Data Set/scanned/csep1638.png")
+input_image = cv2.imread("./Test Data Set/image.png")
 if len(input_image.shape) == 3:
     input_image = cv2.cvtColor(input_image, cv2.COLOR_BGR2GRAY)
 
@@ -34,7 +34,7 @@ for line in len_words:
     word = threshold(word)
     CPI = FE.CutPointIdentification(line, word, MTI) # Algorithm 6
     line = line * 255
-    word = word * 255
+    # word = word * 255
     '''
     for i in range (len(CPI)):
         word[:,int(CPI[i].CutIndex)] = 150
@@ -42,9 +42,11 @@ for line in len_words:
     '''
     MFV = 0
     MFV = stats.mode(word.tolist())[0][0]
+    print(len(CPI))
     TrueCuts = FE.algo7(line,word,CPI,BLI,MTI,MFV)
+    print(len(TrueCuts))
     for i in range (len(TrueCuts)):
-        word[:,TrueCuts[i]] = 150
+        word[:,TrueCuts[i].CutIndex] = 0
     show_images([word])
     
     

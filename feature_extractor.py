@@ -304,18 +304,16 @@ def CutPointIdentification(line, word, MTI): #6
         i += 1
     return SeaparationRegions
 #WIP
-def algo7(line,word,srl,baselineIndex,maxtransisitionIndex,mfv):
+def algo7(line,Word,srl,baselineIndex,maxtransisitionIndex,mfv):
     i = 0
+    word = np.copy(Word)
+    validsaperationRegion = []
+    VP = getVerticalProjection(word)
+    print(len(srl))
     while i < len(srl):
         sr = srl[i]
-        validsaperationRegion = []
-        VP = getVerticalProjection(word[:, sr.EndIndex:sr.StartIndex])
         sr.CutIndex -= sr.EndIndex 
-        if VP[sr.CutIndex] == 0: # to be modified
-            sr.CutIndex += sr.EndIndex 
-            validsaperationRegion.append(sr)
-            i += 1
-        elif pathBetweenStartandEnd(VP):
+        if pathBetweenStartandEnd(VP[sr.EndIndex:sr.StartIndex]):
             sr.CutIndex += sr.EndIndex
             validsaperationRegion.append(sr)
             i += 1
@@ -327,7 +325,7 @@ def algo7(line,word,srl,baselineIndex,maxtransisitionIndex,mfv):
                 numberHoles = count_holes(word[:, Previous_sr.CutIndex:Next_sr.CutIndex],labels)
                 if numberHoles != 0:
                     i += 1
-        elif DetectBaselineBetweenStartAndEnd(word,baselineIndex, sr.EndIndex, sr.StartIndex):
+        elif not(DetectBaselineBetweenStartAndEnd(word,baselineIndex, sr.EndIndex, sr.StartIndex)):
             SHPB = len(getHorizontalProjection(word[0: baselineIndex,:]))
             SHPA = len(getHorizontalProjection(word[baselineIndex:,:]))
             if SHPB > SHPA:
@@ -371,8 +369,12 @@ def algo7(line,word,srl,baselineIndex,maxtransisitionIndex,mfv):
                     i+=3
                 if CheckStroke(word,sr,srl[i+2].CutIndex, sr.CutIndex[i+1], srl[i].CutIndex,maxtransisitionIndex,baselineIndex) and ((DetectDots(word,srl[i+1].CutIndex, srl[i+2].CutIndex) == False) or (DetectDots(word,srl[i+1].CutIndex, srl[i+2].CutIndex))):
                     i += 1
-        else:
-            i += 1
+        else: 
+            i+=1
+        # elif VP[sr.CutIndex] == 0: 
+        #     sr.CutIndex += sr.EndIndex 
+        #     validsaperationRegion.append(sr)
+        #     i += 1
     return validsaperationRegion
         
 
