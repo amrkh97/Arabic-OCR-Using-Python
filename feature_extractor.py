@@ -324,7 +324,7 @@ def algo7(line,word,srl,baselineIndex,maxtransisitionIndex,mfv):
             numberHoles = count_holes(word[:, Previous_sr.CutIndex,Next_sr.CutIndex],labels)
             if numberHoles != 0:
                 i += 1
-        elif DetectBaselineBetweenStartAndEnd(word,baselineIndex, sr.StartIndex, sr.EndIndex):
+        elif DetectBaselineBetweenStartAndEnd(word,baselineIndex, sr.EndIndex, sr.StartIndex):
             SHPB = len(getHorizontalProjection(word[0: baselineIndex,:]))
             SHPA = len(getHorizontalProjection(word[baselineIndex:,:]))
             if SHPB > SHPA:
@@ -337,7 +337,7 @@ def algo7(line,word,srl,baselineIndex,maxtransisitionIndex,mfv):
         elif i == len(srl)-1 or (srl[i+1].CutIndex == 0 and CheckLine19Alg7(srl,sr,srl[i+1].CutIndex,VP,word,maxtransisitionIndex,baselineIndex)):
             i+=1
         elif CheckStroke(word,sr,srl[i+1].CutIndex,sr.CutIndex,srl[i-1].CutIndex,maxtransisitionIndex,baselineIndex) != True:
-            if DetectBaselineBetweenStartAndEnd(word,baselineIndex, srl[i+1].StartIndex, srl[i+1].EndIndex) and srl[i+1].CutIndex <= mfv:
+            if DetectBaselineBetweenStartAndEnd(word,baselineIndex, srl[i+1].EndIndex, srl[i+1].StartIndex) and srl[i+1].CutIndex <= mfv:
                 i+=1
             else:
                 validsaperationRegion.append(sr)
