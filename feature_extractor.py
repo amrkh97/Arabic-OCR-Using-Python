@@ -310,7 +310,7 @@ def algo7(line,word,srl,baselineIndex,maxtransisitionIndex,mfv):
         sr = srl[i]
         validsaperationRegion = []
         VP = getVerticalProjection(word[:, sr.EndIndex:sr.StartIndex])
-        print( sr.StartIndex," : ",sr.EndIndex)
+        sr.CutIndex -= sr.EndIndex 
         if VP[sr.CutIndex] == 0: # to be modified
             validsaperationRegion.append(sr)
             i += 1
@@ -320,8 +320,8 @@ def algo7(line,word,srl,baselineIndex,maxtransisitionIndex,mfv):
         elif  i !=0:
             Previous_sr = srl[i-1]
             Next_sr = srl[i+1]
-            labels = Count_connected_parts(word[:, Previous_sr.CutIndex,Next_sr.CutIndex])
-            numberHoles = count_holes(word[:, Previous_sr.CutIndex,Next_sr.CutIndex],labels)
+            labels = Count_connected_parts(word[:, Previous_sr.CutIndex:Next_sr.CutIndex])
+            numberHoles = count_holes(word[:, Previous_sr.CutIndex:Next_sr.CutIndex],labels)
             if numberHoles != 0:
                 i += 1
         elif DetectBaselineBetweenStartAndEnd(word,baselineIndex, sr.EndIndex, sr.StartIndex):
