@@ -1,27 +1,12 @@
+from commonfunctions import *
 import cv2
 import feature_extractor as FE
-import matplotlib.pyplot as plt
 import numpy as np
+import time
 
-def showImage(img):
-    cv2.imshow("Image", img)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+start_time = time.time()
 
-def show_images(images,titles=None):
-    n_ims = len(images)
-    if titles is None: titles = ['(%d)' % i for i in range(1,n_ims + 1)]
-    fig = plt.figure()
-    n = 1
-    for image,title in zip(images,titles):
-        a = fig.add_subplot(1,n_ims,n)
-        if image.ndim == 2: 
-            plt.gray()
-        plt.imshow(image)
-        a.set_title(title)
-        n += 1
-    fig.set_size_inches(np.array(fig.get_size_inches()) * n_ims)
-    plt.show()
+###################################################################
 
 input_image = cv2.imread("./Pattern Data Set/scanned/csep1638.png")
 if len(input_image.shape) == 3:
@@ -36,6 +21,14 @@ for line in len_words:
     showImage(line)
     BLI = FE.BaselineDetection(line)
     MTI = FE.FindingMaximumTransitions(line, BLI)
+    
+    '''
+    lineBGR = FE.returnToBGR(line)
+    cv2.imshow("Detected BLI And MTI",lineBGR)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+    '''
+    
     print("Line: {} --> BLI: {}, MTI: {}".format(i,BLI,MTI))
     i += 1
     Detected_Words = FE.DetectWords(line)
@@ -47,3 +40,6 @@ for line in len_words:
     for i in range (len(CPI)):
         word[MTI,int(CPI[i].CutIndex)] = 150
     show_images([word])
+    i+=1
+
+print("Running Time In Seconds: {0:.3f}".format(time.time() - start_time))
