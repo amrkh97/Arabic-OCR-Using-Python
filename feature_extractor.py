@@ -334,29 +334,36 @@ def algo7(line,word,srl,baselineIndex,maxtransisitionIndex,mfv):
                 i+=1
             else: 
                 i+=1
-        elif i == len(srl)-1 or (srl[i+1].CutIndex == 0 and CheckLine19Alg7(srl,sr,srl[i+1].CutIndex,VP,word,maxtransisitionIndex,baselineIndex)):
-            i+=1
-        elif CheckStroke(word,sr,srl[i+1].CutIndex,sr.CutIndex,srl[i-1].CutIndex,maxtransisitionIndex,baselineIndex) != True:
-            if DetectBaselineBetweenStartAndEnd(word,baselineIndex, srl[i+1].EndIndex, srl[i+1].StartIndex) and srl[i+1].CutIndex <= mfv:
+        elif (i+1) < len(srl):
+            if i == len(srl)-1 or (srl[i+1].CutIndex == 0 and CheckLine19Alg7(srl,sr,srl[i+1].CutIndex,VP,word,maxtransisitionIndex,baselineIndex)):
                 i+=1
-            else:
+        elif (i+1) < len(srl) and (i-1) > 0:
+            if CheckStroke(word,sr,srl[i+1].CutIndex,sr.CutIndex,srl[i-1].CutIndex,maxtransisitionIndex,baselineIndex) != True:
+                if DetectBaselineBetweenStartAndEnd(word,baselineIndex, srl[i+1].EndIndex, srl[i+1].StartIndex) and srl[i+1].CutIndex <= mfv:
+                    i+=1
+                else:
+                    validsaperationRegion.append(sr)
+                    i+=1
+        elif (i+1) < len(srl) and (i-1) > 0:
+            if CheckStroke(word,sr,srl[i+1].CutIndex ,sr.CutIndex ,srl[i-1].CutIndex,maxtransisitionIndex,baselineIndex):
                 validsaperationRegion.append(sr)
                 i+=1
-        elif CheckStroke(word,sr,srl[i+1].CutIndex ,sr.CutIndex ,srl[i-1].CutIndex,maxtransisitionIndex,baselineIndex):
-            validsaperationRegion.append(sr)
-            i+=1
-        elif CheckStroke(word,sr,srl[i+1].CutIndex ,sr.CutIndex ,srl[i-1].CutIndex,maxtransisitionIndex,baselineIndex) and DetectDots(word,sr.CutIndex, srl[i+1].CutIndex):
-            validsaperationRegion.append(sr)
-            i+=1
-        elif CheckStroke(word,sr,srl[i+1].CutIndex ,sr.CutIndex ,srl[i-1].CutIndex,maxtransisitionIndex,baselineIndex) and (DetectDots(word,sr.CutIndex, srl[i+1].CutIndex) == False):
-            if CheckStroke(word,sr,srl[i+2].CutIndex, sr.CutIndex[i+1], srl[i].CutIndex,maxtransisitionIndex,baselineIndex) and (DetectDots(word,srl[i+1].CutIndex, srl[i+2].CutIndex) == False):
+        elif (i+1) < len(srl) and (i-1) > 0:
+            if CheckStroke(word,sr,srl[i+1].CutIndex ,sr.CutIndex ,srl[i-1].CutIndex,maxtransisitionIndex,baselineIndex) and DetectDots(word,sr.CutIndex, srl[i+1].CutIndex):
                 validsaperationRegion.append(sr)
-                i+=3
-            if (CheckStroke(word,sr,srl[i+2].CutIndex, sr.CutIndex[i+1], srl[i].CutIndex,maxtransisitionIndex,baselineIndex) and (DetectDots(word,srl[i+1].CutIndex, srl[i+2].CutIndex))) and (CheckStroke(word,sr,srl[i+3].CutIndex, sr.CutIndex[i+2], srl[i+1].CutIndex,maxtransisitionIndex,baselineIndex) and (DetectDots(word,srl[i+2].CutIndex, srl[i+3].CutIndex)) == False):
-                validsaperationRegion.append(sr)
-                i+=3
-            if CheckStroke(word,sr,srl[i+2].CutIndex, sr.CutIndex[i+1], srl[i].CutIndex,maxtransisitionIndex,baselineIndex) and ((DetectDots(word,srl[i+1].CutIndex, srl[i+2].CutIndex) == False) or (DetectDots(word,srl[i+1].CutIndex, srl[i+2].CutIndex))):
-                i += 1
+                i+=1
+        elif (i+1) < len(srl) and (i+2) < len(srl) and (i+3) < len(srl):
+            if CheckStroke(word,sr,srl[i+1].CutIndex ,sr.CutIndex ,srl[i-1].CutIndex,maxtransisitionIndex,baselineIndex) and (DetectDots(word,sr.CutIndex, srl[i+1].CutIndex) == False):
+                if CheckStroke(word,sr,srl[i+2].CutIndex, sr.CutIndex[i+1], srl[i].CutIndex,maxtransisitionIndex,baselineIndex) and (DetectDots(word,srl[i+1].CutIndex, srl[i+2].CutIndex) == False):
+                    validsaperationRegion.append(sr)
+                    i+=3
+                if (CheckStroke(word,sr,srl[i+2].CutIndex, sr.CutIndex[i+1], srl[i].CutIndex,maxtransisitionIndex,baselineIndex) and (DetectDots(word,srl[i+1].CutIndex, srl[i+2].CutIndex))) and (CheckStroke(word,sr,srl[i+3].CutIndex, sr.CutIndex[i+2], srl[i+1].CutIndex,maxtransisitionIndex,baselineIndex) and (DetectDots(word,srl[i+2].CutIndex, srl[i+3].CutIndex)) == False):
+                    validsaperationRegion.append(sr)
+                    i+=3
+                if CheckStroke(word,sr,srl[i+2].CutIndex, sr.CutIndex[i+1], srl[i].CutIndex,maxtransisitionIndex,baselineIndex) and ((DetectDots(word,srl[i+1].CutIndex, srl[i+2].CutIndex) == False) or (DetectDots(word,srl[i+1].CutIndex, srl[i+2].CutIndex))):
+                    i += 1
+        else:
+            i += 1
     return validsaperationRegion
         
 
