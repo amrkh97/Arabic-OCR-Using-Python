@@ -4,7 +4,32 @@ import numpy as np
 from scipy import stats
 from imutils import contours
 
-####################################################
+###################Common Functions#################
+
+class SeaparationRegion:
+    EndIndex:int = 0
+    StartIndex:int = 0
+    CutIndex:int = 0
+    
+    def setEndIndex(self, i):
+        self.EndIndex = i
+
+    def setStartIndex(self, i):
+        self.StartIndex = i
+
+    def setCutIndex(self, i):
+        self.CutIndex = i
+
+def open(line):
+    line_copy = np.copy(line)
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT,(3,3))
+    LineImage = cv2.morphologyEx(line_copy, cv2.MORPH_OPEN, kernel)
+    return LineImage
+
+def find_nearest(VP, i):
+    VP = np.asarray(VP)
+    k = (np.abs(VP - i)).argmin()
+    return VP[k]
 
 def correct_skew(thresh):
     coords = np.column_stack(np.where(thresh > 0))
@@ -25,6 +50,8 @@ def getVerticalProjection(img):
 
 def getHorizontalProjection(img):
     return (np.sum(img, axis = 1))//255
+
+####################################################
 
 def DetectLines(line_img):
     input_image = correct_skew(line_img) 
@@ -72,11 +99,11 @@ def DetectWords(line_img):
             fy = y+h
             
             trial_image = input_image[y:fy,x:fx]
-            #trial_image[trial_image < 255] = 0
-            #trial_image = 255 - trial_image
-            cv2.imshow("Detected Word",trial_image)
-            cv2.waitKey(0)
-            cv2.destroyAllWindows()
+            # trial_image[trial_image < 255] = 0
+            # trial_image = 255 - trial_image
+            # cv2.imshow("Detected Word",trial_image)
+            # cv2.waitKey(0)
+            # cv2.destroyAllWindows()
     
             Detected_Words.append(trial_image)
     return Detected_Words
@@ -125,11 +152,51 @@ def FindingMaximumTransitions(line_img, BLI): #5
     #END WHILE    
     return MTI
 
-
 #WIP:
-def CutPointIdentification(line_img,BLI,MTI):
+def CutPointIdentification(line, word, MTI): #6
+    i = 1
+    FLAG = 0
+    LineImage = open(line)
+    VP = getVerticalProjection(line)
+    MFV = stats.mode(VP.tolist())[0][0]
+    SeaparationRegions = []
+    # print(word)
+    while i <= word.shape[1] - 1:
+        # Line 8
+        if word[MTI, i] == 1 and FLAG == 0:
+            SR = SeaparationRegion()
+            SR.setEndIndex(i)
+            FLAG = 1
+        # Line 12
+        elif word[MTI, i] != 1 and FLAG == 1:
+            SR.setStartIndex(i)
+            MidIndex = int((SR.EndIndex + SR.StartIndex)/2)
+            VP = np.array(VP)
 
-    kernel = cv2.getStructuringElement(cv2.MORPH_RECT,(3,3))
-    openingImage = cv2.morphologyEx(line_img, cv2.MORPH_OPEN, kernel)
-    VP = getVerticalProjection(line_img)
-    pass
+            k_equal_zero = np.where(VP[SR.StartIndex:SR.EndIndex] == 0)
+            k_equal_zero = k_equal_zero[0]
+            
+            k_less_than_MFV_EndIndex = np.where(VP <= MFV) and np.where(VP < SR.EndIndex)
+            k_less_than_MFV_EndIndex = k_less_than_MFV_EndIndex[0]
+
+            k_less_than_MFV = np.where(VP[SR.StartIndex:SR.EndIndex] <= MFV)
+            k_less_than_MFV = k_less_than_MFV[0]
+            # k is an array of indices
+            
+            # Line 15
+            if len(k_equal_zero) != 0:
+                SR.setCutIndex(find_nearest(k_equal_zero, MidIndex))
+            elif VP[MidIndex] == MFV:
+                SR.setCutIndex(MidIndex)
+            # Line 20
+            elif len(k_less_than_MFV_EndIndex) != 0:
+                SR.setCutIndex(find_nearest(k_less_than_MFV_EndIndex, MidIndex))
+            # Line 23
+            elif len(k_less_than_MFV) != 0:
+                SR.setCutIndex(find_nearest(k_less_than_MFV, MidIndex))
+            else:
+                SR.setCutIndex(MidIndex)
+            SeaparationRegions.append(SR)
+            FLAG = 0
+        i += 1
+    return SeaparationRegions
