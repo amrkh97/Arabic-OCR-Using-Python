@@ -38,24 +38,10 @@ for line in len_words:
         show_images([word])
     
     line = line * 255
-<<<<<<< HEAD
-    # word = word * 255
-    '''
-    for i in range (len(CPI)):
-        word[:,int(CPI[i].CutIndex)] = 150
-    show_images([word])
-    '''
-    MFV = 0
-    MFV = stats.mode(word.tolist())[0][0]
-    print(len(CPI))
-    TrueCuts = FE.algo7(line,word,CPI,BLI,MTI,MFV)
-    print(len(TrueCuts))
-=======
     word = word * 255
     MFV = stats.mode(word.tolist())[0][0]
     
     TrueCuts = FE.algo7(line,word,SRL,BLI,MTI,MFV)
->>>>>>> 5858492d2aa82926a5d8a7a7021bd55b613e712b
     for i in range (len(TrueCuts)):
         word[:,TrueCuts[i].CutIndex] = 0
     show_images([word])

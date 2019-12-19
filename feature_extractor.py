@@ -387,7 +387,3 @@ def algo7(line,Word,srl,baselineIndex,maxtransisitionIndex,mfv):
         #     validsaperationRegion.append(sr)
         #     i += 1
     return validsaperationRegion
-        
-
-
-
