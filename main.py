@@ -35,13 +35,8 @@ for line in len_words:
     CPI = FE.CutPointIdentification(line, word, MTI) # Algorithm 6
     line = line * 255
     word = word * 255
-    '''
-    for i in range (len(CPI)):
-        word[:,int(CPI[i].CutIndex)] = 150
-    show_images([word])
-    '''
-    MFV = 0
     MFV = stats.mode(word.tolist())[0][0]
+    
     TrueCuts = FE.algo7(line,word,CPI,BLI,MTI,MFV)
     for i in range (len(TrueCuts)):
         word[:,TrueCuts[i]] = 150
