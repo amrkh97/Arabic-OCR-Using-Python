@@ -17,7 +17,7 @@ len_words = FE.DetectLines(input_image)
 
 i=0
 for line in len_words:
-    # showImage(line)
+    
     BLI = FE.BaselineDetection(line)
     MTI = FE.FindingMaximumTransitions(line, BLI)
     lineBGR = FE.returnToBGR(line)
@@ -37,9 +37,8 @@ for line in len_words:
     CPI = FE.CutPointIdentification(line, word, MTI) # Algorithm 6
     line = line * 255
     word = word * 255
-    # print(word.shape)
+
     for i in range (len(CPI)):
-        # print(CPI[i].CutIndex)
         word[:,int(CPI[i].CutIndex)] = 150
     show_images([word])
     
