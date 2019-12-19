@@ -309,7 +309,8 @@ def algo7(line,word,srl,baselineIndex,maxtransisitionIndex,mfv):
     while i < len(srl):
         sr = srl[i]
         validsaperationRegion = []
-        VP = getVerticalProjection(word[:, sr.StartIndex,sr.EndIndex])
+        VP = getVerticalProjection(word[:, sr.EndIndex:sr.StartIndex])
+        print( sr.StartIndex," : ",sr.EndIndex)
         if VP[sr.CutIndex] == 0: # to be modified
             validsaperationRegion.append(sr)
             i += 1
