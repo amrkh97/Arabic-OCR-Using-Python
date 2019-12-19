@@ -27,17 +27,6 @@ for line in len_words:
     print("Line: {} --> BLI: {}, MTI: {}".format(i,BLI,MTI))
     i += 1
     Detected_Words = np.flip(FE.DetectWords(line))
-    '''
-    word = Detected_Words[0]
-    _, word = cv2.threshold(word, 127, 255, cv2.THRESH_BINARY_INV)
-    
-    CPI = FE.CutPointIdentification(line, word, MTI) # Algorithm 6
-    
-    for j in range(len(CPI)):
-        word[MTI,int(CPI[j].CutIndex)] = 120
-      
-    show_images([word])
-    '''
     word = Detected_Words[0]
     #W = FE.removeDots(word)
     
@@ -52,6 +41,6 @@ for line in len_words:
     for i in range (len(CPI)):
         # print(CPI[i].CutIndex)
         word[:,int(CPI[i].CutIndex)] = 150
-    #show_images([word])
+    show_images([word])
     
 print("Running Time In Seconds: {0:.3f}".format(time.time() - start_time))
