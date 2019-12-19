@@ -4,6 +4,7 @@ import numpy as np
 from scipy import stats
 from imutils import contours
 from scipy import ndimage
+from word2subwords import *
 
 ###################Common Functions#################
 
@@ -20,6 +21,11 @@ class SeaparationRegion:
 
     def setCutIndex(self, i):
         self.CutIndex = i
+
+def removeDots(img):
+    copy_img = img.copy()
+    subword_cnts = string2subwords(copy_img, delete_diacritics=True)
+    return draw_subwords(copy_img.shape, subword_cnts)
 
 def open(line):
     line_copy = np.copy(line)
