@@ -312,9 +312,11 @@ def algo7(line,word,srl,baselineIndex,maxtransisitionIndex,mfv):
         VP = getVerticalProjection(word[:, sr.EndIndex:sr.StartIndex])
         sr.CutIndex -= sr.EndIndex 
         if VP[sr.CutIndex] == 0: # to be modified
+            sr.CutIndex += sr.EndIndex 
             validsaperationRegion.append(sr)
             i += 1
         elif pathBetweenStartandEnd(VP):
+            sr.CutIndex += sr.EndIndex
             validsaperationRegion.append(sr)
             i += 1
         elif  i !=0:
@@ -330,6 +332,7 @@ def algo7(line,word,srl,baselineIndex,maxtransisitionIndex,mfv):
             if SHPB > SHPA:
                 i+=1
             elif VP[sr.CutIndex] < mfv:
+                sr.CutIndex += sr.EndIndex
                 validsaperationRegion.append(sr)
                 i+=1
             else: 
@@ -342,22 +345,27 @@ def algo7(line,word,srl,baselineIndex,maxtransisitionIndex,mfv):
                 if DetectBaselineBetweenStartAndEnd(word,baselineIndex, srl[i+1].EndIndex, srl[i+1].StartIndex) and srl[i+1].CutIndex <= mfv:
                     i+=1
                 else:
+                    sr.CutIndex += sr.EndIndex
                     validsaperationRegion.append(sr)
                     i+=1
         elif (i+1) < len(srl) and (i-1) > 0:
             if CheckStroke(word,sr,srl[i+1].CutIndex ,sr.CutIndex ,srl[i-1].CutIndex,maxtransisitionIndex,baselineIndex):
+                sr.CutIndex += sr.EndIndex
                 validsaperationRegion.append(sr)
                 i+=1
         elif (i+1) < len(srl) and (i-1) > 0:
             if CheckStroke(word,sr,srl[i+1].CutIndex ,sr.CutIndex ,srl[i-1].CutIndex,maxtransisitionIndex,baselineIndex) and DetectDots(word,sr.CutIndex, srl[i+1].CutIndex):
+                sr.CutIndex += sr.EndIndex
                 validsaperationRegion.append(sr)
                 i+=1
         elif (i+1) < len(srl) and (i+2) < len(srl) and (i+3) < len(srl):
             if CheckStroke(word,sr,srl[i+1].CutIndex ,sr.CutIndex ,srl[i-1].CutIndex,maxtransisitionIndex,baselineIndex) and (DetectDots(word,sr.CutIndex, srl[i+1].CutIndex) == False):
                 if CheckStroke(word,sr,srl[i+2].CutIndex, sr.CutIndex[i+1], srl[i].CutIndex,maxtransisitionIndex,baselineIndex) and (DetectDots(word,srl[i+1].CutIndex, srl[i+2].CutIndex) == False):
+                    sr.CutIndex += sr.EndIndex
                     validsaperationRegion.append(sr)
                     i+=3
                 if (CheckStroke(word,sr,srl[i+2].CutIndex, sr.CutIndex[i+1], srl[i].CutIndex,maxtransisitionIndex,baselineIndex) and (DetectDots(word,srl[i+1].CutIndex, srl[i+2].CutIndex))) and (CheckStroke(word,sr,srl[i+3].CutIndex, sr.CutIndex[i+2], srl[i+1].CutIndex,maxtransisitionIndex,baselineIndex) and (DetectDots(word,srl[i+2].CutIndex, srl[i+3].CutIndex)) == False):
+                    sr.CutIndex += sr.EndIndex
                     validsaperationRegion.append(sr)
                     i+=3
                 if CheckStroke(word,sr,srl[i+2].CutIndex, sr.CutIndex[i+1], srl[i].CutIndex,maxtransisitionIndex,baselineIndex) and ((DetectDots(word,srl[i+1].CutIndex, srl[i+2].CutIndex) == False) or (DetectDots(word,srl[i+1].CutIndex, srl[i+2].CutIndex))):
