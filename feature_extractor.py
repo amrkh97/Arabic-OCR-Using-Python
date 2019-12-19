@@ -320,7 +320,6 @@ def algo7(line,Word,srl,baselineIndex,maxtransisitionIndex,mfv):
     word = np.copy(Word)
     validsaperationRegion = []
     VP = getVerticalProjection(word)
-    print(len(srl))
     while i < len(srl):
         sr = srl[i]
         sr.CutIndex -= sr.EndIndex 

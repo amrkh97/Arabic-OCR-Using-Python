@@ -32,19 +32,20 @@ for line in len_words:
     for word in Detected_Words:        
         word = threshold(word)
         SRL = FE.CutPointIdentification(line, word, MTI) # Algorithm 6
+    
         word = word * 255
-        for i in range (len(SRL)):
-            word[:,int(SRL[i].CutIndex)] = 150
+        wordVP = FE.getVerticalProjection(word)
+        wordVP = wordVP[wordVP != 0]
+        MFV = stats.mode(wordVP.tolist())[0][0]
+        word = word // 255
+        TrueCuts = FE.algo7(line,word,SRL,BLI,MTI,MFV)
+        
+        for i in range (len(TrueCuts)):
+            word[:,TrueCuts[i].CutIndex] = 0
         show_images([word])
     
+    
     line = line * 255
-    word = word * 255
-    MFV = stats.mode(word.tolist())[0][0]
-    
-    TrueCuts = FE.algo7(line,word,SRL,BLI,MTI,MFV)
-    for i in range (len(TrueCuts)):
-        word[:,TrueCuts[i].CutIndex] = 0
-    show_images([word])
-    
+        
     
 print("Running Time In Seconds: {0:.3f}".format(time.time() - start_time))
