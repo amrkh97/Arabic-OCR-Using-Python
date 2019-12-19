@@ -1,8 +1,8 @@
-from commonfunctions import *
 import cv2
-import feature_extractor as FE
-import numpy as np
 import time
+import numpy as np
+import feature_extractor as FE
+from commonfunctions import *
 
 start_time = time.time()
 
@@ -16,30 +16,28 @@ input_image = FE.correct_skew(input_image)
 len_words = FE.DetectLines(input_image)
 
 i=0
-line = len_words[0]
 for line in len_words:
-    showImage(line)
+    
+    #showImage(line)
     BLI = FE.BaselineDetection(line)
     MTI = FE.FindingMaximumTransitions(line, BLI)
-    
-    '''
     lineBGR = FE.returnToBGR(line)
-    cv2.imshow("Detected BLI And MTI",lineBGR)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-    '''
-    
+    #cv2.line(lineBGR, (0,BLI), (lineBGR.shape[1],BLI), (255,0,0), 1) 
+    #cv2.line(lineBGR, (0,MTI), (lineBGR.shape[1],MTI), (0,255,0), 1) 
+    #showImage(lineBGR)
     print("Line: {} --> BLI: {}, MTI: {}".format(i,BLI,MTI))
     i += 1
-    Detected_Words = FE.DetectWords(line)
+    Detected_Words = np.flip(FE.DetectWords(line))
+    
     word = Detected_Words[0]
-    ret, word = cv2.threshold(word, 127, 255, cv2.THRESH_BINARY_INV)
-    word = word//255
-    # TODO: Ask Amr about the above 2 lines
+    _, word = cv2.threshold(word, 127, 255, cv2.THRESH_BINARY_INV)
+    
     CPI = FE.CutPointIdentification(line, word, MTI) # Algorithm 6
-    for i in range (len(CPI)):
-        word[MTI,int(CPI[i].CutIndex)] = 150
+    
+    for j in range(len(CPI)):
+        word[MTI,int(CPI[j].CutIndex)] = 120
+        
     show_images([word])
-    i+=1
+    #showImage(word)
 
 print("Running Time In Seconds: {0:.3f}".format(time.time() - start_time))

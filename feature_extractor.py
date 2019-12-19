@@ -26,6 +26,9 @@ def open(line):
     LineImage = cv2.morphologyEx(line_copy, cv2.MORPH_OPEN, kernel)
     return LineImage
 
+def returnToBGR(image):
+    return cv2.cvtColor(image,cv2.COLOR_GRAY2RGB)
+
 def find_nearest(VP, i):
     VP = np.asarray(VP)
     k = (np.abs(VP - i)).argmin()
@@ -73,12 +76,7 @@ def DetectLines(line_img):
             fy = y+h
             cv2.rectangle(im2, (x, y), (fx, fy), (100, 100, 100), 2)
             trial_image = input_image[y:fy,x:fx]
-            #trial_image[trial_image < 255] = 0
-            #trial_image = 255 - trial_image
             Detected_Lines.append(trial_image)
-    #cv2.imshow("Line",im2)
-    #cv2.waitKey(0)
-    #cv2.destroyAllWindows()
     
     return Detected_Lines
 
@@ -97,13 +95,7 @@ def DetectWords(line_img):
             x, y, w, h = cv2.boundingRect(cnt)
             fx = x+w
             fy = y+h
-            
             trial_image = input_image[y:fy,x:fx]
-            
-            #cv2.imshow("Detected Word",trial_image)
-            #cv2.waitKey(0)
-            #cv2.destroyAllWindows()
-    
             Detected_Words.append(trial_image)
     return Detected_Words
 
@@ -147,13 +139,9 @@ def FindingMaximumTransitions(line_img, BLI): #5
              MaxTransitions = CurrentTransitions
              MTI = i
         i += 1
-    #END WHILE    
+    #END WHILE
+    MTI = line_img.shape[0] - MTI    
     return MTI
-
-
-def returnToBGR(image):
-    return cv2.cvtColor(image,cv2.COLOR_GRAY2RGB)
-
 
 #WIP:
 def CutPointIdentification(line, word, MTI): #6
