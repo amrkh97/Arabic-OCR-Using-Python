@@ -43,8 +43,10 @@ for line in len_words:
     _, word = cv2.threshold(word, 127, 255, cv2.THRESH_BINARY_INV)
     word = word//255
     CPI = FE.CutPointIdentification(line, word, MTI) # Algorithm 6
+    print(len(CPI))
+    word = word*255
     for i in range (len(CPI)):
-        word[MTI,int(CPI[i].CutIndex)] = 150
+        word[:,int(CPI[i].CutIndex)] = 150
     show_images([word])
     
 print("Running Time In Seconds: {0:.3f}".format(time.time() - start_time))
