@@ -3,6 +3,8 @@ import imutils
 import numpy as np
 from scipy import stats
 from imutils import contours
+from scipy import ndimage
+from word2subwords import *
 
 ###################Common Functions#################
 
@@ -19,6 +21,11 @@ class SeaparationRegion:
 
     def setCutIndex(self, i):
         self.CutIndex = i
+
+def removeDots(img):
+    copy_img = img.copy()
+    subword_cnts = string2subwords(copy_img, delete_diacritics=True)
+    return draw_subwords(copy_img.shape, subword_cnts)
 
 def open(line):
     line_copy = np.copy(line)
@@ -53,7 +60,113 @@ def getVerticalProjection(img):
 
 def getHorizontalProjection(img):
     return (np.sum(img, axis = 1))//255
+# added func for algo 7
+def pathBetweenStartandEnd(vp):
+    count = np.count_nonzero(vp)
+    if count < len(vp):
+        return True
+    return False
+def Count_connected_parts(img):  # this function returns the number of connected parts given the binary image of any letter
+    labeled, nr_objects = ndimage.label(img > 0)  # 100 is the threshold but in case of binary image given (0,1) it will change
+    # print(nr_objects)
+    # print("Number of objects is {}".format(nr_objects))
+    return nr_objects
 
+
+def count_holes(img, num_connected_parts):  # count number of holes in each character
+    # gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    # gray = np.copy(img)
+    # kernel = np.ones((3,3),np.float32)/9
+    # dst = cv2.filter2D(gray,-1,kernel)
+    # print(img)
+    # ret,thresh1 = cv2.threshold(img,50,255,cv2.THRESH_BINARY)
+
+    contours, hierarchy = cv2.findContours(img, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+    # print("y= ",len(contours)-1-num_connected_parts)
+    return abs(len(contours) - num_connected_parts)
+def DetectBaselineBetweenStartAndEnd(Word, BLI, Start, End):#End is left
+    if np.sum( Word[BLI,End:Start] ) == 0:
+        return True #no path found
+    return False
+
+def DistanceBetweenTwoPoints(x2,x1):
+    dist = np.abs(x2 - x1) 
+    return dist
+
+def CheckLine19Alg7(SRL,SR, NextCutIndex, VP, Word,MTI,BLI):
+    LeftPixelCol = SR.EndIndex
+    TopPixelIndex = 0
+    for i in range(MTI,MTI-20,-1):
+        if Word[i-1,LeftPixelCol] == 0:
+            TopPixelIndex = i
+            break
+    Dist1 = DistanceBetweenTwoPoints( TopPixelIndex,BLI )
+    Dist2 = DistanceBetweenTwoPoints( MTI,BLI )
+    if ( SR==SRL[0] and VP[NextCutIndex] == 0) or ( Dist1 < (0.5*Dist2) ) :
+        return True
+    return False
+def CheckStroke(Word, SR,NextCut, CurrentCut, PreviousCut, MTI,BLI):
+    HPAbove = getHorizontalProjection( Word[0:BLI,:] )
+    HPBelow = getHorizontalProjection( Word[BLI:,:] )  
+    SHPB = np.sum(HPBelow)
+    SHPA = np.sum(HPAbove)
+    LeftPixelCol = SR.EndIndex
+    TopPixelIndex = 0
+    for i in range(MTI,MTI-20,-1):
+        if Word[i-1,LeftPixelCol] == 0:
+            TopPixelIndex = i
+            break
+            
+    Dist1 = DistanceBetweenTwoPoints( TopPixelIndex,BLI )
+    HP = getHorizontalProjection(Word)
+    HPList = HP.tolist()
+    HPMode = max(set(HPList), key = HPList.count) 
+    HPList.sort()
+    SecondPeakValue = HPList[-2]
+    
+    VP=getVerticalProjection(Word)
+    VPList = VP.tolist()
+    MFV = max(set(VPList), key = VPList.count) 
+    
+    Holes = DetectHoles(Word, NextCut, CurrentCut, PreviousCut, MTI)
+    if (SHPA > SHPB) and (Dist1 < (2*SecondPeakValue) ) and (HPMode == MFV) and (~Holes) :
+        return True
+    return False
+def DetectHoles(Word, NextCut, CurrentCut, PreviousCut, MTI):#next is left, previous is right
+    LefPixelIndex = 0
+    for i in range(NextCut, PreviousCut, 1):
+        if Word[MTI, i] == 1:
+            LefPixelIndex = i
+            break
+    
+    RightPixelIndex = 0
+    for i in range(PreviousCut, NextCut, -1):
+        if Word[MTI, i] == 1:
+            RightPixelIndex = i
+            break
+    
+    UpPixelIndex = 0
+    for i in range(MTI, MTI - 10, -1):
+        if Word[i, CurrentCut] == 1:
+            UpPixelIndex = i
+            break
+    
+    DownPixelIndex = 0
+    for i in range(MTI, MTI + 10, 1):
+        if Word[i, CurrentCut] == 1:
+            DownPixelIndex = i
+            break
+    
+    if ( np.abs(LefPixelIndex - RightPixelIndex) <=5 ) and ( np.abs(UpPixelIndex - DownPixelIndex ) <=5 ):
+        return True
+    else:
+        return False
+def DetectDots(PrevImg,NextImg):
+    dif = PrevImg - NextImg
+    count = np.count_nonzero(dif)
+    if count != 0:
+        return True
+    return False
 ####################################################
 
 def DetectLines(line_img):
@@ -195,3 +308,62 @@ def CutPointIdentification(line, word, MTI): #6
             FLAG = 0
         i += 1
     return SeaparationRegions
+#WIP
+def algo7(line,word,srl,baselineIndex,maxtransisitionIndex,mfv):
+    i = 0
+    while i < len(srl):
+        sr = srl[i]
+        validsaperationRegion = []
+        VP = getVerticalProjection(word[:, sr.StartIndex,sr.EndIndex])
+        if VP[sr.CutIndex] == 0: # to be modified
+            validsaperationRegion.append(sr)
+            i += 1
+        elif pathBetweenStartandEnd(VP):
+            validsaperationRegion.append(sr)
+            i += 1
+        elif  i !=0:
+            Previous_sr = srl[i-1]
+            Next_sr = srl[i+1]
+            labels = Count_connected_parts(word[:, Previous_sr.CutIndex,Next_sr.CutIndex])
+            numberHoles = count_holes(word[:, Previous_sr.CutIndex,Next_sr.CutIndex],labels)
+            if numberHoles != 0:
+                i += 1
+        elif DetectBaselineBetweenStartAndEnd(word,baselineIndex, sr.StartIndex, sr.EndIndex):
+            SHPB = len(getHorizontalProjection(word[0: baselineIndex,:]))
+            SHPA = len(getHorizontalProjection(word[baselineIndex:,:]))
+            if SHPB > SHPA:
+                i+=1
+            elif VP[sr.CutIndex] < mfv:
+                validsaperationRegion.append(sr)
+                i+=1
+            else: 
+                i+=1
+        elif i == len(srl)-1 or (srl[i+1].CutIndex == 0 and CheckLine19Alg7(srl,sr,srl[i+1].CutIndex,VP,word,maxtransisitionIndex,baselineIndex)):
+            i+=1
+        elif CheckStroke(word,sr,srl[i+1].CutIndex,sr.CutIndex,srl[i-1].CutIndex,maxtransisitionIndex,baselineIndex) != True:
+            if DetectBaselineBetweenStartAndEnd(word,baselineIndex, srl[i+1].StartIndex, srl[i+1].EndIndex) and srl[i+1].CutIndex <= mfv:
+                i+=1
+            else:
+                validsaperationRegion.append(sr)
+                i+=1
+        elif CheckStroke(word,sr,srl[i+1].CutIndex ,sr.CutIndex ,srl[i-1].CutIndex,maxtransisitionIndex,baselineIndex):
+            validsaperationRegion.append(sr)
+            i+=1
+        #getImgWithoutDots = getwithout()
+        elif CheckStroke(word,sr,srl[i+1].CutIndex ,sr.CutIndex ,srl[i-1].CutIndex,maxtransisitionIndex,baselineIndex) and DetectDots(word[:, sr.CutIndex: srl[i+1].CutIndex]):
+            validsaperationRegion.append(sr)
+            i+=1
+        elif CheckStroke(word,sr,srl[i+1].CutIndex ,sr.CutIndex ,srl[i-1].CutIndex,maxtransisitionIndex,baselineIndex) and (DetectDots(word[:, sr.CutIndex: srl[i+1].CutIndex]) == False):
+            if CheckStroke(word,sr,srl[i+2].CutIndex, sr.CutIndex[i+1], srl[i].CutIndex,maxtransisitionIndex,baselineIndex) and (DetectDots(word[:, srl[i+1].CutIndex: srl[i+2].CutIndex]) == False):
+                validsaperationRegion.append(sr)
+                i+=3
+            if (CheckStroke(word,sr,srl[i+2].CutIndex, sr.CutIndex[i+1], srl[i].CutIndex,maxtransisitionIndex,baselineIndex) and (DetectDots(word[:, srl[i+1].CutIndex: srl[i+2].CutIndex]))) and (CheckStroke(word,sr,srl[i+3].CutIndex, sr.CutIndex[i+2], srl[i+1].CutIndex,maxtransisitionIndex,baselineIndex) and (DetectDots(word[:, srl[i+2].CutIndex: srl[i+3].CutIndex])) == False):
+                validsaperationRegion.append(sr)
+                i+=3
+            if CheckStroke(word,sr,srl[i+2].CutIndex, sr.CutIndex[i+1], srl[i].CutIndex,maxtransisitionIndex,baselineIndex) and ((DetectDots(word[:, srl[i+1].CutIndex: srl[i+2].CutIndex]) == False) or (DetectDots(word[:, srl[i+1].CutIndex: srl[i+2].CutIndex]))):
+                i += 1
+    return validsaperationRegion
+        
+
+
+
