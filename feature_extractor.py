@@ -97,7 +97,6 @@ def BaselineDetection(line_img): #4
     #BLI = line_img.shape[0] - BLI        
     return BLI
 
-
 ####################################################################
 
 def amrsFunction(word,BLI):
@@ -137,7 +136,6 @@ def preprocessIntoWords(input_image):
         input_image = cv2.cvtColor(input_image, cv2.COLOR_BGR2GRAY)
     input_image = correct_skew(input_image)
     return DetectLines(input_image)
-
 
 def extractSeparateLettersWholeImage(input_image):
     len_words = preprocessIntoWords(input_image)
