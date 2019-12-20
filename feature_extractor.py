@@ -3,6 +3,7 @@ import imutils
 import numpy as np
 from scipy import stats
 from imutils import contours
+from commonfunctions import *
 
 def returnToBGR(image):
     return cv2.cvtColor(image,cv2.COLOR_GRAY2RGB)
@@ -123,3 +124,11 @@ def showImagesFromSegments(word,listOfSegments):
         finalSegments.append(word[:,i:segment])
         i = segment
     return finalSegments
+
+def extractFromWord(word,BLI):
+    word = threshold(word)
+    word = word * 255          
+    wordCopy = amrsFunction(word,BLI)
+    listOfSegmentations = extractLettersFromWord(wordCopy)
+    return showImagesFromSegments(word,listOfSegmentations)
+        
