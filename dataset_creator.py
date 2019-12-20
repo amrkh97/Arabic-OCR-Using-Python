@@ -69,8 +69,6 @@ def createDataSet(ArabicDictionary,images,labels):
         i += 1
 
 
-
-
 D = createArabicDictionary()
 img = cv2.imread("./Test Data Set/image.png")
 createDataSet(D, [img],['ي'])

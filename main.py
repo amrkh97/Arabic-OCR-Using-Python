@@ -13,19 +13,24 @@ start_time = time.time()
 ###################################################################
 
 #WIP
-def ReadAndSegment():
+def ReadAndSegment(ii):
     Path = './Pattern Data Set/scanned/'
 
-    Number_Of_Files = 1           
+    Number_Of_Files = 1000
+    #Number_Of_Files = 1           
     gen =  glob.iglob(Path+ "*.png")
     for i in range(Number_Of_Files):
         py = next(gen)
-        #input_image = cv2.imread(py)
-        input_image = cv2.imread('./Pattern Data Set/scanned/csep1638.png')
+        #print("Currently Segmenting: ",py)
+        input_image = cv2.imread(py)
+        #input_image = cv2.imread('./Pattern Data Set/scanned/capr102.png')
         #RF.read_text_file(Path+'/text/',)
         all_words = FE.extractSeparateLettersWholeImage(input_image)
-        
-ReadAndSegment()
+        ii += 1
+    print(ii)
+
+j = 0        
+ReadAndSegment(j)
 
 
 print("Running Time In Seconds: {0:.3f}".format(time.time() - start_time))
