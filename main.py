@@ -22,14 +22,8 @@ for line in len_words:
     BLI = FE.BaselineDetection(line)
     Detected_Words = np.flip(FE.DetectWords(line))
     
-    for word in Detected_Words:        
-        
-        word = threshold(word)
-        word = word * 255
-        
-        wordCopy = FE.amrsFunction(word,BLI)
-        listOfSegmentations = FE.extractLettersFromWord(wordCopy)
-        SegmentedWord = FE.showImagesFromSegments(word,listOfSegmentations)
+    for word in Detected_Words:  
+        SegmentedWord = FE.extractFromWord(word,BLI)
         for k in SegmentedWord:
             show_images([k])
     
