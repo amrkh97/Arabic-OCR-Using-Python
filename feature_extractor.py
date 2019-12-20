@@ -147,6 +147,6 @@ def extractSeparateLettersWholeImage(input_image):
     
         for word in Detected_Words:  
             SegmentedWord = extractFromWord(word,BLI)
-            #TODO: Add filteration to remove small segments that are irrelevant.
+            #show_images(SegmentedWord)
             all_words.append(SegmentedWord)
     return all_words   

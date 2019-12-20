@@ -31,7 +31,10 @@ def read_text_file(path,fileName):
     lis2 = get_letters_from_word(lis)
     return lis2
 
+
+'''
 path = './Test Data Set/'
 fileName = 'test2.txt'
 lis = read_text_file(path,fileName)
 print(lis)
+'''
