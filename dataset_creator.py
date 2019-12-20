@@ -37,7 +37,7 @@ def createArabicDictionary():
     return D
 
 def saveLettersToImages(letter,label):
-    cv2.imwrite('../Dataset/{}.jpg'.format(label), letter)
+    cv2.imwrite('./Dataset/{}.jpg'.format(label), letter)
     
 def checkNumberOfSeparations():
     pass
