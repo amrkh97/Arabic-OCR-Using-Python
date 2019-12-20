@@ -41,6 +41,10 @@ def ReadAndSegment(ii):
 
 j = 0        
 ReadAndSegment(j)
+# reading from file for features
+# Path = './Test Data Set/'
+# Name = 'image_label_pair.csv'
+# VP_HP_list, labels_list = RF.read_features_from_file(Path,Name)
 
 
 print("Running Time In Seconds: {0:.3f}".format(time.time() - start_time))
