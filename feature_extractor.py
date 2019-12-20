@@ -149,11 +149,7 @@ def preprocessIntoWords(input_image):
     input_image = correct_skew(input_image)
     return DetectLines(input_image)
 
-
 def Is_excess_segment (char):
-    # show_images([char])
-    # print(np.sum(char))
-    # print("******")
     HP = getHorizontalProjection (char)
     HP[HP !=0] = 1
     HPIndices = np.where(HP == 1)[0]
