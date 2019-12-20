@@ -55,7 +55,7 @@ def checkNumberOfSeparations(wordSeparationList,lettersOfWordList): #Expecting a
         return wordSeparationList,checkBool
     
     if numberofSegments > actualNumber: #Oversegmented word but may be handled
-       
+        
        print("#")
     
     pass
