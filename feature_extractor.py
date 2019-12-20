@@ -169,3 +169,4 @@ def extractSeparateLettersWholeImage(input_image):
             show_images(SegmentedWord)
             all_words.append(SegmentedWord)
     return all_words   
+
