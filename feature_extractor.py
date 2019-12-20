@@ -126,11 +126,8 @@ def showImagesFromSegments(word,listOfSegments):
     privious_final_segment_index = -1
     for segment in listOfSegments:
         #TODO: Add filteration to remove small segments that are irrelevant.
-        if Is_excess_segment(word[:,i:segment]): #and privious_final_segment_index > 0:
-            pass
-            # finalSegments[privious_final_segment_index] = np.reshape(np.concatenate(np.concatenate((finalSegments[privious_final_segment_index], np.array(word[:,i:segment])) , axis=1)) , (finalSegments[privious_final_segment_index].shape[0] , -1))
+        if  not (Is_excess_segment(word[:,i:segment])): #and privious_final_segment_index > 0:
             # finalSegments[privious_final_segment_index] = np.concatenate((finalSegments[privious_final_segment_index], np.array(word[:,i:segment]).T) , axis=1)
-        else:
             finalSegments.append(word[:,i:segment])
             privious_final_segment_index += 1
         i = segment
@@ -171,3 +168,4 @@ def extractSeparateLettersWholeImage(input_image):
             #show_images(SegmentedWord)
             all_words.append(SegmentedWord)
     return all_words   
+
