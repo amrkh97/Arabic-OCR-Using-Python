@@ -18,9 +18,10 @@ start_time = time.time()
 
 #WIP
 def ReadAndSegment(ii):
-    Path = './Test Data Set/'
-
-    Number_Of_Files = 1
+    Path = './Pattern Data Set/scanned/'
+    textPath = './Pattern Data Set/text/'
+    
+    Number_Of_Files = 1000
     #Number_Of_Files = 1           
     gen =  glob.iglob(Path+ "*.png")
     for i in range(Number_Of_Files):
@@ -32,12 +33,12 @@ def ReadAndSegment(ii):
         splitted = splitted[0]
         splitted += ".txt"
         #input_image = cv2.imread('./Pattern Data Set/scanned/capr102.png')
-        list_of_letters = RF.read_text_file(Path,splitted)
+        list_of_letters = RF.read_text_file(textPath,splitted)
         all_words = FE.extractSeparateLettersWholeImage(input_image)
         DC.createDataSet(all_words,list_of_letters)
 
         ii += 1
-    print(ii)
+        print("Ended Images Index: ",str(ii))
 
 j = 0        
 ReadAndSegment(j)
