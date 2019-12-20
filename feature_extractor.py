@@ -131,4 +131,24 @@ def extractFromWord(word,BLI):
     wordCopy = amrsFunction(word,BLI)
     listOfSegmentations = extractLettersFromWord(wordCopy)
     return showImagesFromSegments(word,listOfSegmentations)
-        
+
+def preprocessIntoWords(input_image):
+    if len(input_image.shape) == 3:
+        input_image = cv2.cvtColor(input_image, cv2.COLOR_BGR2GRAY)
+    input_image = correct_skew(input_image)
+    return DetectLines(input_image)
+
+
+def extractSeparateLettersWholeImage(input_image):
+    len_words = preprocessIntoWords(input_image)
+    all_words = []
+    for line in len_words:
+    
+        BLI = BaselineDetection(line)
+        Detected_Words = np.flip(DetectWords(line))
+    
+        for word in Detected_Words:  
+            SegmentedWord = extractFromWord(word,BLI)
+            #TODO: Add filteration to remove small segments that are irrelevant.
+            all_words.append(SegmentedWord)
+    return all_words   
