@@ -157,9 +157,20 @@ def extractSeparateLettersWholeImage(input_image):
     len_words = preprocessIntoWords(input_image)
     all_words = []
     for line in len_words:
-    
+        
+        #show_images([line])
         BLI = BaselineDetection(line)
-        Detected_Words = np.flip(DetectWords(line))
+        Detected_Words = DetectWords(line)
+        
+        #show_images(Detected_Words)
+        
+        Detected_Words.reverse()
+        
+        #print(len(Detected_Words))
+        #show_images(Detected_Words,['After Reverse'])
+        
+        #print("----------#############------------")
+        #Detected_Words = np.flip(Detected_Words)
 
         for word in Detected_Words:  
             SegmentedWord = extractFromWord(word,BLI)
