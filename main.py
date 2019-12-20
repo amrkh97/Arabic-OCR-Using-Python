@@ -16,12 +16,12 @@ start_time = time.time()
 def ReadAndSegment():
     Path = './Pattern Data Set/scanned/'
 
-    Number_Of_Files = 1           
+    Number_Of_Files = 1000           
     gen =  glob.iglob(Path+ "*.png")
     for i in range(Number_Of_Files):
         py = next(gen)
-        #input_image = cv2.imread(py)
-        input_image = cv2.imread('./Pattern Data Set/scanned/csep1638.png')
+        input_image = cv2.imread(py)
+        #input_image = cv2.imread('./Pattern Data Set/scanned/csep1638.png')
         #RF.read_text_file(Path+'/text/',)
         all_words = FE.extractSeparateLettersWholeImage(input_image)
         

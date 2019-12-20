@@ -9,7 +9,6 @@ def returnToBGR(image):
     return cv2.cvtColor(image,cv2.COLOR_GRAY2RGB)
 
 
-
 def correct_skew(thresh):
     coords = np.column_stack(np.where(thresh > 0))
     angle = cv2.minAreaRect(coords)[-1]
@@ -105,7 +104,8 @@ def amrsFunction(word,BLI):
     VP = getVerticalProjection(word)
     copyWord = np.copy(word)
     VP[VP < 2] = 0
-    copyWord[BLI, VP == 0] = 0
+    if BLI < word.shape[0]:
+        copyWord[BLI, VP == 0] = 0
     return copyWord
 
 def extractLettersFromWord(word):
@@ -117,8 +117,6 @@ def extractLettersFromWord(word):
     VPIndices = VPIndices[temp > 1]
     
     return VPIndices
-
-
 
 def showImagesFromSegments(word,listOfSegments):
     i = 0
