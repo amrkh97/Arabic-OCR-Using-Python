@@ -1,10 +1,11 @@
 import cv2
 import imutils
 import numpy as np
+import word2subwords as w2s
 from scipy import stats
 from imutils import contours
 from scipy import ndimage
-from word2subwords import *
+
 
 ###################Common Functions#################
 
@@ -24,8 +25,8 @@ class SeaparationRegion:
 
 def removeDots(img):
     copy_img = img.copy()
-    subword_cnts = string2subwords(copy_img, delete_diacritics=True)
-    return draw_subwords(copy_img.shape, subword_cnts)
+    subword_cnts = w2s.string2subwords(copy_img, delete_diacritics=True)
+    return w2s.draw_subwords(copy_img.shape, subword_cnts)
 
 def open(line):
     line_copy = np.copy(line)
@@ -60,12 +61,14 @@ def getVerticalProjection(img):
 
 def getHorizontalProjection(img):
     return (np.sum(img, axis = 1))//255
+
 # added func for algo 7
 def pathBetweenStartandEnd(vp):
     count = np.count_nonzero(vp)
     if count < len(vp):
         return True
     return False
+
 def Count_connected_parts(img):  # this function returns the number of connected parts given the binary image of any letter
     labeled, nr_objects = ndimage.label(img > 0)  # 100 is the threshold but in case of binary image given (0,1) it will change
     return nr_objects
@@ -154,6 +157,7 @@ def DetectHoles(Word, NextCut, CurrentCut, PreviousCut, MTI):#next is left, prev
         return True
     else:
         return False
+    
 def DetectDots(word, start_index, end_index):
     HP = getHorizontalProjection[word[start_index:end_index, :]]
     for H in HP:
