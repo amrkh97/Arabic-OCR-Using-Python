@@ -16,7 +16,3 @@ def read_text_file(fileName):
                 wordsList.append(wordLetters)
     return wordsList
 
-
-filename ='test'
-allLetters = read_text_file(filename)
-print(allLetters)
