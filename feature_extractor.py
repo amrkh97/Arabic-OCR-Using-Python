@@ -8,6 +8,7 @@ from commonfunctions import *
 def returnToBGR(image):
     return cv2.cvtColor(image,cv2.COLOR_GRAY2RGB)
 
+
 def correct_skew(thresh):
     coords = np.column_stack(np.where(thresh > 0))
     angle = cv2.minAreaRect(coords)[-1]
@@ -103,7 +104,8 @@ def amrsFunction(word,BLI):
     VP = getVerticalProjection(word)
     copyWord = np.copy(word)
     VP[VP < 2] = 0
-    copyWord[BLI, VP == 0] = 0
+    if BLI < word.shape[0]:
+        copyWord[BLI, VP == 0] = 0
     return copyWord
 
 def extractLettersFromWord(word):
@@ -119,8 +121,13 @@ def extractLettersFromWord(word):
 def showImagesFromSegments(word,listOfSegments):
     i = 0
     finalSegments = []
+    privious_final_segment_index = -1
     for segment in listOfSegments:
-        finalSegments.append(word[:,i:segment])
+        #TODO: Add filteration to remove small segments that are irrelevant.
+        if  not (Is_excess_segment(word[:,i:segment])): #and privious_final_segment_index > 0:
+            # finalSegments[privious_final_segment_index] = np.concatenate((finalSegments[privious_final_segment_index], np.array(word[:,i:segment]).T) , axis=1)
+            finalSegments.append(word[:,i:segment])
+            privious_final_segment_index += 1
         i = segment
     return finalSegments
 
@@ -137,16 +144,37 @@ def preprocessIntoWords(input_image):
     input_image = correct_skew(input_image)
     return DetectLines(input_image)
 
+def Is_excess_segment (char):
+    HP = getHorizontalProjection (char)
+    HP[HP !=0] = 1
+    HPIndices = np.where(HP == 1)[0]
+    HP_Indices_diff = np.diff(HPIndices)  
+    if (np.sum(char)//255) <= 4 and not( np.any(HP_Indices_diff > 1)):
+        return True
+    return False
+
 def extractSeparateLettersWholeImage(input_image):
     len_words = preprocessIntoWords(input_image)
     all_words = []
     for line in len_words:
-    
+        
+        #show_images([line])
         BLI = BaselineDetection(line)
-        Detected_Words = np.flip(DetectWords(line))
-    
+        Detected_Words = DetectWords(line)
+        
+        #show_images(Detected_Words)
+        
+        Detected_Words.reverse()
+        
+        #print(len(Detected_Words))
+        #show_images(Detected_Words,['After Reverse'])
+        
+        #print("----------#############------------")
+        #Detected_Words = np.flip(Detected_Words)
+
         for word in Detected_Words:  
             SegmentedWord = extractFromWord(word,BLI)
-            #TODO: Add filteration to remove small segments that are irrelevant.
+            #show_images(SegmentedWord)
             all_words.append(SegmentedWord)
     return all_words   
+

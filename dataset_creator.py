@@ -90,8 +90,6 @@ def createDataSet(ArabicDictionary,images,labels):
         i += 1
 
 
-
-
 D = createArabicDictionary()
 img = cv2.imread("./Test Data Set/csep1638.png")
 all_words = FE.extractSeparateLettersWholeImage(img)
