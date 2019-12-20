@@ -2,4 +2,4 @@ Pattern Data Set/
 *.pyc
 .vscode/settings.json
 tempCodeRunnerFile.py
-.vscode/launch.json
+Dataset/

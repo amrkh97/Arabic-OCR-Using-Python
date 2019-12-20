@@ -1,7 +1,16 @@
 import os
 import cv2
 import numpy as np
+import feature_extractor as FE
+from commonfunctions import *
+from read_files import read_text_file
+import csv
 
+def ShowImageCV2(image):
+    for img in image:
+        cv2.imshow("Image", img)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
 
 def createArabicDictionary():
     D = {}
@@ -37,16 +46,32 @@ def createArabicDictionary():
     return D
 
 def saveLettersToImages(letter,label):
-    cv2.imwrite('./Dataset/{}.jpg'.format(label), letter)
+    resized = cv2.resize(letter, (28,28), interpolation = cv2.INTER_AREA)
+    VP = FE.getVerticalProjection(resized)
+    HP = FE.getHorizontalProjection(resized)
+    concat = np.concatenate((VP, HP), axis=0)
+    concat = concat.tolist()
+    concat.append(label)
+    cv2.imwrite('./Dataset/{}.png'.format(str(label)), letter)
+    # file = open("image_label_pair.txt","a")
+    # file.write(str(concat)+" "+"- "+label+"\n")
+    # file.close()
+    with open("image_label_pair.csv", 'a', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(concat)
 
 #WIP    
 def checkNumberOfSeparations(wordSeparationList,lettersOfWordList): #Expecting an ndarray and a list
+    '''
+    wordSeaparationList = single word segmentation
+    lettersOfWordList = letters of word from text file
+    '''
     checkBool = False
     
-    numberofSegments = wordSeparationList.shape[0]
+    #numberofSegmentsli = np.array(wordSeparationList)
+    numberofSegments = len(wordSeparationList)
     lettersOfWordList = np.array(lettersOfWordList)
-    actualNumber = lettersOfWordList.shape[0]
-    
+    actualNumber = len(lettersOfWordList)
     if numberofSegments == actualNumber: # No action needed as number of segments same as number of letters
         checkBool = True
         return wordSeparationList,checkBool 
@@ -55,20 +80,32 @@ def checkNumberOfSeparations(wordSeparationList,lettersOfWordList): #Expecting a
         return wordSeparationList,checkBool
     
     if numberofSegments > actualNumber: #Oversegmented word but may be handled
-        
-       print("#")
-    
-    pass
+        return wordSeparationList,checkBool
 
-def createDataSet(ArabicDictionary,images,labels):
+def createDataSet(images,labels):
+    D = createArabicDictionary()
     i = 0
-    for image in images:
-        label = ArabicDictionary[labels[i]]
+    for word in images:
+        j = 0
+        segmented_list, no_segmentation_error = checkNumberOfSeparations(word, labels[i])
         
-        saveLettersToImages(image,str(label))
+        if no_segmentation_error:
+            for l in labels[i]:
+                # if l == 'م':
+                #   print(ArabicDictionary[l])
+                label = D[l]
+                saveLettersToImages(word[j], label)
+                j+=1
         i += 1
 
 
-D = createArabicDictionary()
-img = cv2.imread("./Test Data Set/image.png")
-createDataSet(D, [img],['ي'])
+
+# img = cv2.imread("./Test Data Set/csep1638.png")
+# all_words = FE.extractSeparateLettersWholeImage(img)
+# # print(all_words)
+# ShowImageCV2(all_words[10])
+# path = './Test Data Set/'
+# fileName = 'csep1638.txt'
+# lis = read_text_file(path,fileName)
+# print(lis[10])
+# createDataSet(D,all_words,lis)

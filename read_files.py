@@ -23,6 +23,7 @@ def get_letters_from_word(wordList):
     lettersList = []
     for word in wordList:
         char = list(word)
+        char.reverse()
         lettersList.append(char)
     return lettersList
 
