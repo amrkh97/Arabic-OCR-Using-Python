@@ -1,18 +1,21 @@
 import os
 import cv2
 import numpy as np
+from io import StringIO
 
 
 
-def read_text_file(fileName):
-    wordsList = []
-    with open('./Test Data Set/'+fileName+'.txt','r', encoding ='utf-8') as f:
-        for line in f:
-            for word in line.split():
-                wordLetters = []
-                for letter in word:
-                    wordLetters.append(letter)
-                #wordLetters.reverse()
-                wordsList.append(wordLetters)
-    return wordsList
+def read_text_file(path,fileName):
+    LettersList = []
+    text = path+fileName+'.txt'
+    t = np.loadtxt(text, dtype = 'str',encoding='utf-8', delimiter=' ')
+    for word in t:
+        LettersList.append(list(word))
+        # l = list(word)
+        # l.reverse()
+        # LettersList.append(l)
+    return LettersList
 
+path = './Test Data Set/'
+fileName = 'test'
+print(read_text_file(path,fileName))
