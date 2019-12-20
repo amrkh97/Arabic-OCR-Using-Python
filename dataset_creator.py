@@ -38,8 +38,26 @@ def createArabicDictionary():
 
 def saveLettersToImages(letter,label):
     cv2.imwrite('./Dataset/{}.jpg'.format(label), letter)
+
+#WIP    
+def checkNumberOfSeparations(wordSeparationList,lettersOfWordList): #Expecting an ndarray and a list
+    checkBool = False
     
-def checkNumberOfSeparations():
+    numberofSegments = wordSeparationList.shape[0]
+    lettersOfWordList = np.array(lettersOfWordList)
+    actualNumber = lettersOfWordList.shape[0]
+    
+    if numberofSegments == actualNumber: # No action needed as number of segments same as number of letters
+        checkBool = True
+        return wordSeparationList,checkBool 
+    
+    if numberofSegments < actualNumber: # This means that the BLI value caused an error and the word was under segmented
+        return wordSeparationList,checkBool
+    
+    if numberofSegments > actualNumber: #Oversegmented word but may be handled
+        
+       print("#")
+    
     pass
 
 def createDataSet(ArabicDictionary,images,labels):
@@ -49,6 +67,9 @@ def createDataSet(ArabicDictionary,images,labels):
         
         saveLettersToImages(image,str(label))
         i += 1
+
+
+
 
 D = createArabicDictionary()
 img = cv2.imread("./Test Data Set/image.png")

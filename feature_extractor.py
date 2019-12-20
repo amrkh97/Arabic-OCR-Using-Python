@@ -99,7 +99,6 @@ def BaselineDetection(line_img): #4
     #BLI = line_img.shape[0] - BLI        
     return BLI
 
-
 ####################################################################
 
 def amrsFunction(word,BLI):
