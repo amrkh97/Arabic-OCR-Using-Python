@@ -10,12 +10,8 @@ start_time = time.time()
 ###################################################################
 
 input_image = cv2.imread("./Test Data Set/image.png")
-if len(input_image.shape) == 3:
-    input_image = cv2.cvtColor(input_image, cv2.COLOR_BGR2GRAY)
 
-input_image = FE.correct_skew(input_image)
-len_words = FE.DetectLines(input_image)
-
+len_words = FE.preprocessIntoWords(input_image)
 
 for line in len_words:
     
