@@ -5,6 +5,8 @@ import numpy as np
 from scipy import stats
 import feature_extractor as FE
 from commonfunctions import *
+from read_files import read_text_file
+
 
 start_time = time.time()
 
