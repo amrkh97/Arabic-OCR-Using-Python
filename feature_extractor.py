@@ -2,6 +2,7 @@ import cv2
 import imutils
 import numpy as np
 import word2subwords as w2s
+import matplotlib.pyplot as plt
 from scipy import stats
 from imutils import contours
 from scipy import ndimage
@@ -221,17 +222,23 @@ def BaselineDetection(line_img): #4
     thresh_img = np.asarray(thresh_img)
     
     HP = getHorizontalProjection(thresh_img)
+    #plt.plot(HP)
+    #plt.show()
     PV_Indices = (HP > np.roll(HP,1)) & (HP > np.roll(HP,-1))
     
     for i in range(len(PV_Indices)):
         if PV_Indices[i] == True:
             PV.append(HP[i])
-    MAX = max(PV)
+    #Temp Fix:
+    if len(PV) != 0:
+        MAX = max(PV)
+    else:
+        MAX = 36
     
     for i in range(len(HP)):
         if HP[i] == MAX:
             BLI = i
-            
+    #BLI = line_img.shape[0] - BLI        
     return BLI
 
 def FindingMaximumTransitions(line_img, BLI): #5
