@@ -24,32 +24,15 @@ for line in len_words:
     print("Line: {} --> BLI: {}, MTI: {}".format(i,BLI,MTI))
     i += 1
     Detected_Words = np.flip(FE.DetectWords(line))
-    #W = FE.removeDots(word)
     line = threshold(line)
     
     for word in Detected_Words:        
         word = threshold(word)
         SRL = FE.CutPointIdentification(line, word, MTI) # Algorithm 6
-
         word = word * 255
-        WordBLI = FE.BaselineDetection(word)
-        
         lineBGR = FE.returnToBGR(word)
         cv2.line(lineBGR, (0,BLI), (lineBGR.shape[1],BLI), (255,0,0), 1) 
-        # cv2.line(lineBGR, (0,MTI), (lineBGR.shape[1],MTI), (0,255,0), 1) 
-        show_images([lineBGR])
-        '''
-        wordVP = wordVP[wordVP != 0]
-        MFV = stats.mode(wordVP.tolist())[0][0]
-        word = word // 255
-        TrueCuts = FE.algo7(line,word,SRL,BLI,MTI,MFV)
-        
-        for i in range (len(TrueCuts)):
-            word[:,TrueCuts[i].CutIndex] = 0
-        #show_images([word])
-        '''
-    
-    line = line * 255
-        
+        wordCopy = FE.amrsFunction(word,BLI)
+        show_images([wordCopy,lineBGR],['After Removal','BLI'])
     
 print("Running Time In Seconds: {0:.3f}".format(time.time() - start_time))

@@ -397,3 +397,19 @@ def algo7(line,Word,srl,baselineIndex,maxtransisitionIndex,mfv):
         #     validsaperationRegion.append(sr)
         #     i += 1
     return validsaperationRegion
+
+
+####################################################################
+
+def amrsFunction(word,BLI):
+    VP = getVerticalProjection(word)
+    #plt.plot(VP)
+    #plt.show()
+    copyWord = np.copy(word)
+    VP[VP < 2] = 0
+    #copyWord[:BLI-1, VP == 0] = 0
+    copyWord[BLI, VP == 0] = 0
+    return copyWord
+
+def amrsExtractLettersFromWords():
+    pass
