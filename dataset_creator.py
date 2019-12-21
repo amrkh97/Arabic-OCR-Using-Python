@@ -47,17 +47,17 @@ def createArabicDictionary():
 
 def saveLettersToImages(letter,label):
     resized = cv2.resize(letter, (28,28), interpolation = cv2.INTER_AREA)
+    
     VP = FE.getVerticalProjection(resized)
     HP = FE.getHorizontalProjection(resized)
     concat = np.concatenate((VP, HP), axis=0)
     concat = concat.tolist()
     concat.append(label)
-    #cv2.imwrite('./Dataset/{}.png'.format(str(label)), letter)
+    
     with open("image_label_pair.csv", 'a', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(concat)
-
-#WIP    
+  
 def checkNumberOfSeparations(wordSeparationList,lettersOfWordList): #Expecting an ndarray and a list
     '''
     wordSeaparationList = single word segmentation
@@ -91,15 +91,3 @@ def createDataSet(images,labels):
                 saveLettersToImages(word[j], label)
                 j+=1
         i += 1
-
-
-
-# img = cv2.imread("./Test Data Set/csep1638.png")
-# all_words = FE.extractSeparateLettersWholeImage(img)
-# # print(all_words)
-# ShowImageCV2(all_words[10])
-# path = './Test Data Set/'
-# fileName = 'csep1638.txt'
-# lis = read_text_file(path,fileName)
-# print(lis[10])
-# createDataSet(D,all_words,lis)

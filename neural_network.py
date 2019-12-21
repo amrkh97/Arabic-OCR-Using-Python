@@ -1,16 +1,14 @@
 import numpy as np
 import torch
-import itertools
 import torch.nn.functional as F
 
 from torch import nn
 from torch import optim
-from torchvision import datasets, transforms
 
 
 def createNN(_inputSize):
     input_size = _inputSize
-    hidden_sizes = [450, 250] # 450 nodes in first hidden layer -> 250 in second
+    hidden_sizes = [800, 400] # 450 nodes in first hidden layer -> 250 in second
     output_size = 29 # Number of possible outputs
 
     model = nn.Sequential(nn.Linear(input_size, hidden_sizes[0]),
@@ -21,11 +19,11 @@ def createNN(_inputSize):
     return model
 
 def convert2tensor(x):
-    x = torch.FloatTensor(x)
+    x = torch.cuda.FloatTensor(x)
     return x
 
 def convert2long(x):
-    x = torch.LongTensor(x)
+    x = torch.cuda.LongTensor(x)
     return x
 
 def switchLoader(e,it1,it2,it3):
@@ -36,12 +34,11 @@ def switchLoader(e,it1,it2,it3):
         }
     return switcher.get(e,"Invalid Iterator")
 
-
 def TrainNN(model,t1,t2,t3):
     
     criterion = nn.CrossEntropyLoss()
     
-    optimizer = optim.Adam(model.parameters(), lr=0.001)
+    optimizer = optim.Adam(model.parameters(), lr=1e-5)
 
     epochs = 3
     print_every = 1000
@@ -59,7 +56,7 @@ def TrainNN(model,t1,t2,t3):
             
             labels = [labels,]
             labels = convert2long(labels)
-            labels = torch.LongTensor(labels)
+            labels = torch.cuda.LongTensor(labels)
             
             optimizer.zero_grad() # Clear the gradients as gradients are accumulated
         

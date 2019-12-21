@@ -21,8 +21,8 @@ def ReadAndSegment(ii):
     Path = './Pattern Data Set/scanned/'
     textPath = './Pattern Data Set/text/'
     
-    Number_Of_Files = 1000
-    #Number_Of_Files = 1           
+    #Number_Of_Files = 15000
+    Number_Of_Files = 1           
     gen =  glob.iglob(Path+ "*.png")
     for i in range(Number_Of_Files):
         py = next(gen)
@@ -40,10 +40,7 @@ def ReadAndSegment(ii):
 
 j = 0        
 ReadAndSegment(j)
-# reading from file for features
-# Path = './Test Data Set/'
-# Name = 'image_label_pair.csv'
-# VP_HP_list, labels_list = RF.read_features_from_file(Path,Name)
+
 
 
 print("Running Time In Seconds: {0:.3f}".format(time.time() - start_time))
