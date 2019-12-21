@@ -23,8 +23,8 @@ def ReadAndSegment(ii):
     Path = './Pattern Data Set/scanned/'
     textPath = './Pattern Data Set/text/'
     
-    #Number_Of_Files = 15000
-    Number_Of_Files = 1           
+    Number_Of_Files = 12800
+    #Number_Of_Files = 1           
     gen =  glob.iglob(Path+ "*.png")
     for i in range(Number_Of_Files):
         py = next(gen)
