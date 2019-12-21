@@ -48,10 +48,18 @@ def read_features_from_file(path, fileName):
             VP_HP_list.append(row)
     return VP_HP_list, labels_list
 
+#WIP
+def processChunkToTrain(chunk):
+    chunk  = np.array(chunk)
+    for row in  chunk:
+        print(row)
+    
 
-'''
-path = './Test Data Set/'
-fileName = 'test2.txt'
-lis = read_text_file(path,fileName)
-print(lis)
-'''
+
+def pandasCSVHandler(fileName,chunkSize):
+    
+    for chunk in pd.read_csv(fileName,chunksize=chunkSize):
+        processChunkToTrain(chunk)
+
+
+#pandasCSVHandler('image_label_pair.csv',100000)

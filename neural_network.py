@@ -37,19 +37,21 @@ def TrainNN(model,dev,trainloader):
             steps += 1
             images = images.to(dev)
             labels = labels.to(dev)
-            # Flatten MNIST images into a 784 long vector
-            images.resize_(images.size()[0], images[0].shape[1]*images[0].shape[2])
-        
+            
             optimizer.zero_grad() # Clear the gradients as gradients are accumulated
         
             # Forward and backward passes
-        
             output = model.forward(images)
             loss = criterion(output, labels) # Calculate the loss
             loss.backward() # backpropagate to get values of the new weights
             optimizer.step() # Take a step to update the newly calculated weights
         
             running_loss += loss.item()
+            
+            if steps % print_every == 0:
+                print("Epoch: {}/{}... ".format(e+1, epochs),
+                  "Loss: {:.4f}".format(running_loss/print_every))
+                running_loss = 0
         
 
     #Saving the model after training:
