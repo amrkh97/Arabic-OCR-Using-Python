@@ -1,12 +1,14 @@
-import cv2
 import csv
-import time
+import cv2
+import dataset_creator as DC
+import feature_extractor as FE
 import glob
 import numpy as np
+import os
 import read_files as RF
-import feature_extractor as FE
-import dataset_creator as DC
- 
+import time
+import platform
+
 from scipy import stats
 from commonfunctions import *
 
@@ -27,8 +29,13 @@ def ReadAndSegment(ii):
     for i in range(Number_Of_Files):
         py = next(gen)
         input_image = cv2.imread(py)
-        splitted = py.split("\\")
-        splitted = splitted[1].split(".")
+        splitted = None
+        if platform.system() == "Windows":
+            splitted = py.split("\\")
+            splitted = splitted[1].split(".")
+        else:
+            splitted = py.split("/")
+            splitted = splitted[3].split(".")
         splitted = splitted[0]
         splitted += ".txt"
         list_of_letters = RF.read_text_file(textPath,splitted)
