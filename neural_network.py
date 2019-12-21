@@ -65,7 +65,7 @@ def TrainNN(model,t1,t2,t3):
         
             # Forward and backward passes
             output = model.forward(images)
-            output = F.softmax(output, dim=0)
+            #output = F.softmax(output, dim=0)
             
             output = output.unsqueeze(dim=0)
             loss = criterion(output, labels) # Calculate the loss
