@@ -29,8 +29,6 @@ def getVerticalProjection(img):
 def getHorizontalProjection(img):
     return (np.sum(img, axis = 1))//255
 
-####################################################
-
 def DetectLines(line_img):
     input_image = correct_skew(line_img) 
     _,thresh = cv2.threshold(input_image, 0, 255,cv2.THRESH_OTSU|cv2.THRESH_BINARY_INV)
@@ -86,7 +84,7 @@ def BaselineDetection(line_img): #4
     for i in range(len(PV_Indices)):
         if PV_Indices[i] == True:
             PV.append(HP[i])
-    #Temp Fix:
+            
     if len(PV) != 0:
         MAX = max(PV)
     else:
@@ -123,9 +121,7 @@ def showImagesFromSegments(word,listOfSegments):
     finalSegments = []
     privious_final_segment_index = -1
     for segment in listOfSegments:
-        #TODO: Add filteration to remove small segments that are irrelevant.
-        if  not (Is_excess_segment(word[:,i:segment])): #and privious_final_segment_index > 0:
-            # finalSegments[privious_final_segment_index] = np.concatenate((finalSegments[privious_final_segment_index], np.array(word[:,i:segment]).T) , axis=1)
+        if  not (Is_excess_segment(word[:,i:segment])):
             finalSegments.append(word[:,i:segment])
             privious_final_segment_index += 1
         i = segment
@@ -158,23 +154,13 @@ def extractSeparateLettersWholeImage(input_image):
     all_words = []
     for line in len_words:
         
-        #show_images([line])
         BLI = BaselineDetection(line)
         Detected_Words = DetectWords(line)
         
-        #show_images(Detected_Words)
-        
         Detected_Words.reverse()
-        
-        #print(len(Detected_Words))
-        #show_images(Detected_Words,['After Reverse'])
-        
-        #print("----------#############------------")
-        #Detected_Words = np.flip(Detected_Words)
 
         for word in Detected_Words:  
             SegmentedWord = extractFromWord(word,BLI)
-            #show_images(SegmentedWord)
             all_words.append(SegmentedWord)
     return all_words   
 

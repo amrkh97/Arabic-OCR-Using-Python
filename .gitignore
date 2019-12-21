@@ -3,3 +3,4 @@ Pattern Data Set/
 .vscode/settings.json
 tempCodeRunnerFile.py
 Dataset/
+*.csv

@@ -26,13 +26,11 @@ def ReadAndSegment(ii):
     gen =  glob.iglob(Path+ "*.png")
     for i in range(Number_Of_Files):
         py = next(gen)
-        #print("Currently Segmenting: ",py)
         input_image = cv2.imread(py)
         splitted = py.split("\\")
         splitted = splitted[1].split(".")
         splitted = splitted[0]
         splitted += ".txt"
-        #input_image = cv2.imread('./Pattern Data Set/scanned/capr102.png')
         list_of_letters = RF.read_text_file(textPath,splitted)
         all_words = FE.extractSeparateLettersWholeImage(input_image)
         DC.createDataSet(all_words,list_of_letters)

@@ -2,6 +2,7 @@ import os
 import cv2
 import csv
 import numpy as np
+import pandas as pd
 from io import StringIO
 
 
@@ -33,6 +34,8 @@ def read_text_file(path,fileName):
     lis2 = get_letters_from_word(lis)
     return lis2
 
+#WIP
+# Needs to be made with pandas and in the form of an iterator
 def read_features_from_file(path, fileName):
     VP_HP_list = []
     labels_list = []

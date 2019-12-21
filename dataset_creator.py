@@ -53,9 +53,6 @@ def saveLettersToImages(letter,label):
     concat = concat.tolist()
     concat.append(label)
     cv2.imwrite('./Dataset/{}.png'.format(str(label)), letter)
-    # file = open("image_label_pair.txt","a")
-    # file.write(str(concat)+" "+"- "+label+"\n")
-    # file.close()
     with open("image_label_pair.csv", 'a', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(concat)
@@ -68,7 +65,6 @@ def checkNumberOfSeparations(wordSeparationList,lettersOfWordList): #Expecting a
     '''
     checkBool = False
     
-    #numberofSegmentsli = np.array(wordSeparationList)
     numberofSegments = len(wordSeparationList)
     lettersOfWordList = np.array(lettersOfWordList)
     actualNumber = len(lettersOfWordList)
@@ -91,8 +87,6 @@ def createDataSet(images,labels):
         
         if no_segmentation_error:
             for l in labels[i]:
-                # if l == 'م':
-                #   print(ArabicDictionary[l])
                 label = D[l]
                 saveLettersToImages(word[j], label)
                 j+=1
