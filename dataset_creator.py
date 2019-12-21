@@ -52,7 +52,7 @@ def saveLettersToImages(letter,label):
     concat = np.concatenate((VP, HP), axis=0)
     concat = concat.tolist()
     concat.append(label)
-    cv2.imwrite('./Dataset/{}.png'.format(str(label)), letter)
+    #cv2.imwrite('./Dataset/{}.png'.format(str(label)), letter)
     with open("image_label_pair.csv", 'a', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(concat)

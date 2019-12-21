@@ -3,6 +3,7 @@ import cv2
 import csv
 import numpy as np
 import pandas as pd
+import neural_network as NN
 from io import StringIO
 
 
@@ -34,24 +35,22 @@ def read_text_file(path,fileName):
     lis2 = get_letters_from_word(lis)
     return lis2
 
-#WIP
-# Needs to be made with pandas and in the form of an iterator
-def read_features_from_file(path, fileName):
-    VP_HP_list = []
-    labels_list = []
-    with open('image_label_pair.csv') as file:
-        rows = csv.reader(file, delimiter=',',quoting=csv.QUOTE_NONNUMERIC)
-        for row in rows:
-            label = row.pop(-1)
-            labels_list.append(int(label))
-            row = list(np.int_(row))
-            VP_HP_list.append(row)
-    return VP_HP_list, labels_list
+def processChunkToTrain(chunk,model):
+    chunk  = np.array(chunk)
+    featuresList = chunk[:,:55]
+    labelsList = chunk[:,56]
+    
+    finalList = zip(featuresList, labelsList)
+    finalList2 = zip(featuresList, labelsList)
+    finalList3 = zip(featuresList, labelsList)
+    
+    NN.TrainNN(model,finalList,finalList2,finalList3)
+    print("Ended Training the chunk!")    
 
-
-'''
-path = './Test Data Set/'
-fileName = 'test2.txt'
-lis = read_text_file(path,fileName)
-print(lis)
-'''
+def pandasCSVHandler(model,fileName,chunkSize):
+    print("Started Chuncking!")
+    for chunk in pd.read_csv(fileName,chunksize=chunkSize):
+        processChunkToTrain(chunk,model)
+        
+        #model = NN.load_checkpoint('trained_model.pth')
+        
