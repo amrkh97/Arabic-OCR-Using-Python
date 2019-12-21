@@ -1,48 +1,75 @@
 import numpy as np
 import torch
+import itertools
+import torch.nn.functional as F
+
 from torch import nn
 from torch import optim
-import torch.nn.functional as F
 from torchvision import datasets, transforms
+
 
 def createNN(_inputSize):
     input_size = _inputSize
     hidden_sizes = [450, 250] # 450 nodes in first hidden layer -> 250 in second
     output_size = 29 # Number of possible outputs
 
-    dev = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu") # Defining our GPU device
     model = nn.Sequential(nn.Linear(input_size, hidden_sizes[0]),
                           nn.ReLU(),
                           nn.Linear(hidden_sizes[0], hidden_sizes[1]),
                           nn.ReLU(),
-                          nn.Linear(hidden_sizes[1], output_size)).to(dev)
-    model.cuda(dev) # Making our model run on the GPU
-    print(model)
-    return model,dev
+                          nn.Linear(hidden_sizes[1], output_size))
+    return model
 
-#Example:
-#createNN(40)
+def convert2tensor(x):
+    x = torch.FloatTensor(x)
+    return x
 
-def TrainNN(model,dev,trainloader):
-    # Using Cross Entropy For Loss Function and Stochastic Gradient Descent or Adam for Optimizing Weights:
+def convert2long(x):
+    x = torch.LongTensor(x)
+    return x
+
+def switchLoader(e,it1,it2,it3):
+    switcher={
+        0:it1,
+        1:it2,
+        2:it3
+        }
+    return switcher.get(e,"Invalid Iterator")
+
+
+def TrainNN(model,t1,t2,t3):
+    
     criterion = nn.CrossEntropyLoss()
+    
     optimizer = optim.Adam(model.parameters(), lr=0.001)
 
     epochs = 3
-    print_every = 40
+    print_every = 1000
     steps = 0
+    
     for e in range(epochs):
         running_loss = 0
-        for images, labels in iter(trainloader):
+            
+        loaderForData = switchLoader(e,t1,t2,t3)    
+
+        for images, labels in iter(loaderForData):
             steps += 1
-            images = images.to(dev)
-            labels = labels.to(dev)
+            
+            images = convert2tensor(images)
+            
+            labels = [labels,]
+            labels = convert2long(labels)
+            labels = torch.LongTensor(labels)
             
             optimizer.zero_grad() # Clear the gradients as gradients are accumulated
         
             # Forward and backward passes
             output = model.forward(images)
+            output = F.softmax(output, dim=0)
+            
+            output = output.unsqueeze(dim=0)
             loss = criterion(output, labels) # Calculate the loss
+            
             loss.backward() # backpropagate to get values of the new weights
             optimizer.step() # Take a step to update the newly calculated weights
         
@@ -51,17 +78,15 @@ def TrainNN(model,dev,trainloader):
             if steps % print_every == 0:
                 print("Epoch: {}/{}... ".format(e+1, epochs),
                   "Loss: {:.4f}".format(running_loss/print_every))
-                running_loss = 0
         
-
+        running_loss = 0 #After Each Epoch
+        print("Ended Epoch.",str(e+1))
     #Saving the model after training:
-    PATH = './trained_model.pth'
+    PATH = 'trained_model.pth'
     torch.save(model.state_dict(), PATH)
     
 
 def TestNN(model,dev,testloader):
-    
-    #testloader = torch.utils.data.DataLoader(testset, batch_size=64, shuffle=True)
 
     images, labels = next(iter(testloader))
 
@@ -76,4 +101,9 @@ def TestNN(model,dev,testloader):
     ps = F.softmax(logits, dim=1)
 
     print('Actual Number is: {}'.format(label))
-    #helper.view_classify(img.view(1, 28, 28).cpu(), ps.cpu()) # Return Image and Tensor to CPU because numpy doesn't support GPU yet
+    
+    
+def load_checkpoint(filepath):
+    model = torch.load('trained_model.pth')
+    return model
+
