@@ -37,8 +37,8 @@ def read_text_file(path,fileName):
 
 def processChunkToTrain(chunk,model):
     chunk  = np.array(chunk)
-    featuresList = chunk[:,:55]
-    labelsList = chunk[:,56]
+    featuresList = chunk[:,:70]
+    labelsList = chunk[:,71]
     
     finalList  = zip(featuresList, labelsList)
     finalList2 = zip(featuresList, labelsList)

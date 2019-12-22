@@ -32,6 +32,7 @@ def pandasCSVHandler(fileName,chunkSize,model):
     print("Started Chuncking!")
     FinalListForWriting = []
     for chunk in pd.read_csv(fileName,chunksize=chunkSize):
+        chunk = chunk.replace(np.nan, 0)
         c = np.array(chunk)
         FinalListForWriting.append(NN.TestNN(model,c[0,:]))
     
@@ -46,9 +47,11 @@ def write_prediction_to_txt(words):
     file = open("predictions.txt","w",encoding='utf-8')
     
     for word in words:
-        for letter in word:
-            file.write(letter)
-        file.write(" ")
+        #for letter in word:
+            #file.write(letter)
+        #file.write(" ")
+        file.write(word)
+        #file.write(" ")
     file.close()
     
     # Open file to user

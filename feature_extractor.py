@@ -172,11 +172,34 @@ def Gabor_filter (img):
     filtered_img = cv2.filter2D(img, cv2.CV_8UC3, g_kernel)
     filtered_img = np.array(filtered_img)
     features = filtered_img.flatten()
+    return features
 
-#####################
+def horizontal_transitions(img):
+    horizontal_transition_count = 0
+    col_found_in = {}
+    for r in range(img.shape[0]):
+        for c in range(img.shape[1]-1):
+            if img[r,c] != img[r,c+1] and  not( c in col_found_in.keys()) :
+                col_found_in[c] = 1
+                horizontal_transition_count+=1
+    return horizontal_transition_count
 
+def vertcial_transisions (img):
+    vertical_transition_count = 0
+    row_found_in = {}
+    for c in range(img.shape[1]):
+        for r in range(img.shape[0]-1):
+            if img[r,c] != img[r+1,c] and not( r in row_found_in.keys()):
+                row_found_in[r] = 1
+                vertical_transition_count+=1
+    return vertical_transition_count
 
-#####################
+def number_of_transitions(img):
+    #img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    ht = horizontal_transitions(img)    
+    vt = vertcial_transisions(img)
+    return ht,vt
+
 #Mufeed
 def Center_of_mass(letters):
     properties = regionprops(letters, letters)
