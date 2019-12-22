@@ -166,6 +166,12 @@ def extractSeparateLettersWholeImage(input_image):
 
 #####################
 #Abdelgawad
+def Gabor_filter (img):
+    g_kernel = cv2.getGaborKernel((21, 21), 8.0, np.pi/4, 10.0, 0.5, 0, ktype=cv2.CV_32F)
+    filtered_img = cv2.filter2D(img, cv2.CV_8UC3, g_kernel)
+    filtered_img = np.array(filtered_img)
+    features = filtered_img.flatten()
+
 #####################
 
 
