@@ -37,8 +37,11 @@ def read_text_file(path,fileName):
 
 def processChunkToTrain(chunk,model):
     chunk  = np.array(chunk)
-    featuresList = chunk[:,:70]
-    labelsList = chunk[:,71]
+    featuresList = chunk[:,:56]
+    labelsList = chunk[:,56]
+    
+    featuresList = featuresList.tolist()
+    labelsList = labelsList.tolist()
     
     finalList  = zip(featuresList, labelsList)
     finalList2 = zip(featuresList, labelsList)
@@ -53,6 +56,5 @@ def processChunkToTrain(chunk,model):
 def pandasCSVHandler(model,fileName,chunkSize):
     print("Started Chuncking!")
     for chunk in pd.read_csv(fileName,chunksize=chunkSize):
+        chunk = chunk.replace(np.nan, 0)
         processChunkToTrain(chunk,model)
-        
-        #model = NN.load_checkpoint('trained_model.pth')

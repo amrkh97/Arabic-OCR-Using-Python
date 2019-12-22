@@ -3,7 +3,6 @@ import cv2
 import numpy as np
 import feature_extractor as FE
 from commonfunctions import *
-from read_files import read_text_file
 import csv
 
 def ShowImageCV2(image):

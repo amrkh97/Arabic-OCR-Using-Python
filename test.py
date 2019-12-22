@@ -6,6 +6,7 @@ import numpy as np
 import os
 import pandas as pd
 import time
+import torch
 import neural_network as NN
 from commonfunctions import *
 from scipy import stats
@@ -19,11 +20,35 @@ def ShowImageCV2(image):
 
 
 def save_letters_to_csv(letter):
-    resized = cv2.resize(letter, (28, 28), interpolation=cv2.INTER_AREA)
-    VP = FE.getVerticalProjection(resized)
-    HP = FE.getHorizontalProjection(resized)
-    concat = np.concatenate((VP, HP), axis=0)
-    concat = concat.tolist()
+    hw = FE.height_over_width(letter)
+    
+    letter = cv2.resize(letter, (28,28), interpolation = cv2.INTER_AREA)
+    
+    VP_ink,HP_ink = FE.Black_ink_histogram(letter)
+    Com1,Com2 = FE.Center_of_mass(letter)
+    CC = FE.Connected_Component(letter)
+    CH = FE.count_holes(letter,CC)
+    r1,r2,r3,r4,r5,r6,r7,r8,r9,r10 = FE.ratiosBlackWhite(letter)
+    HorizontalTransitions,VerticalTransitions = FE.number_of_transitions(letter)
+    
+    concat = [*VP_ink, *HP_ink] #28+28 = 56
+    concat.append(Com1) #1
+    concat.append(Com2) #1
+    concat.append(CC) #1
+    concat.append(r1) #1
+    concat.append(r2) #1
+    concat.append(r3) #1
+    concat.append(r4) #1
+    concat.append(r5) #1
+    concat.append(r6) #1
+    concat.append(r7) #1
+    concat.append(r8) #1
+    concat.append(r9) #1
+    concat.append(r10) #1
+    concat.append(HorizontalTransitions) #1
+    concat.append(VerticalTransitions) #1
+    concat.append(hw) #1
+    concat.append(CH) #1
     with open("image_label_pair_TEST.csv", 'a', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(concat)
@@ -77,8 +102,13 @@ def main():
 
     test(path, number_of_files)
     
-    AllWordsConcated = pandasCSVHandler("image_label_pair_TEST.csv", 1) #I won't know where the end of the word is
-
+    model = NN.createNN(56)
+    model.load_state_dict(torch.load('trained_model.pth'))
+    model.eval() 
+    
+    
+    AllWordsConcated = pandasCSVHandler("test.csv", 1,model) #I won't know where the end of the word is
+    print(AllWordsConcated)
     # write_prediction_to_txt(words)
 
     print("Running Time In Seconds: {0:.3f}".format(time.time() - start_time))
