@@ -171,7 +171,7 @@ def Gabor_filter (img):
     filtered_img = cv2.filter2D(img, cv2.CV_8UC3, g_kernel)
     filtered_img = np.array(filtered_img)
     features = filtered_img.flatten()
-
+    return features
 #####################
 
 
