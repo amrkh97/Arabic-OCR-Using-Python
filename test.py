@@ -32,6 +32,7 @@ def pandasCSVHandler(fileName,chunkSize,model):
     print("Started Chuncking!")
     FinalListForWriting = []
     for chunk in pd.read_csv(fileName,chunksize=chunkSize):
+        chunk = chunk.replace(np.nan, 0)
         c = np.array(chunk)
         FinalListForWriting.append(NN.TestNN(model,c[0,:]))
     
