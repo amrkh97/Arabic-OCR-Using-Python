@@ -177,4 +177,16 @@ def extractSeparateLettersWholeImage(input_image):
 #####################
 #Salah
 #####################
+def ratio_of_white_over_black(image):
+    image = np.array(image)
+    unique, counts = np.unique(image, return_counts=True)
+    dictionary = dict(zip(unique, counts))
+    return dictionary[1]/dictionary[0]
 
+def height_over_width(image):
+    image = np.array(image)
+    return image.shape[0]/image.shape[1]
+
+def number_of_transitions(image):
+    image = np.array(image)
+    pass
