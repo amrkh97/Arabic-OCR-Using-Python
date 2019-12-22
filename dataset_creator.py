@@ -79,30 +79,35 @@ def returnToArabicDictionary():
     return D
 
 def saveLettersToImages(letter,label):
+    
+    hw = FE.height_over_width(letter)
+    
     letter = cv2.resize(letter, (28,28), interpolation = cv2.INTER_AREA)
-    # VP = FE.getVerticalProjection(letter)
-    # HP = FE.getHorizontalProjection(letter)
+    
     VP_ink,HP_ink = FE.Black_ink_histogram(letter)
     Com1,Com2 = FE.Center_of_mass(letter)
     CC = FE.Connected_Component(letter)
     r1,r2,r3,r4,r5,r6,r7,r8,r9,r10 = FE.ratiosBlackWhite(letter)
-    hw = FE.height_over_width(letter)
-    concat = [*VP_ink, *HP_ink]
-    concat.append(Com1)
-    concat.append(Com2)
-    concat.append(CC)
-    concat.append(r1)
-    concat.append(r2)
-    concat.append(r3)
-    concat.append(r4)
-    concat.append(r5)
-    concat.append(r6)
-    concat.append(r7)
-    concat.append(r8)
-    concat.append(r9)
-    concat.append(r10)
-    concat.append(hw)
-    # concat = np.concatenate((VP_ink, HP_ink,Com1,Com2,CC,r1,r2,r3,r4,r5,r6,r7,r8,r9,r10, hw), axis=0)
+    HorizontalTransitions,VerticalTransitions = FE.number_of_transitions(letter)
+    
+    concat = [*VP_ink, *HP_ink] #28+28 = 56
+    concat.append(Com1) #1
+    concat.append(Com2) #1
+    concat.append(CC) #1
+    concat.append(r1) #1
+    concat.append(r2) #1
+    concat.append(r3) #1
+    concat.append(r4) #1
+    concat.append(r5) #1
+    concat.append(r6) #1
+    concat.append(r7) #1
+    concat.append(r8) #1
+    concat.append(r9) #1
+    concat.append(r10) #1
+    concat.append(HorizontalTransitions) #1
+    concat.append(VerticalTransitions) #1
+    concat.append(hw) #1
+    
     concat.append(label)
     print(concat)
     with open("image_label_pair.csv", 'a', newline='') as file:
