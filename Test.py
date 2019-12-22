@@ -2,11 +2,11 @@ import csv
 import cv2
 import feature_extractor as FE
 import glob
-import numpy as npos
+import numpy as np
 import os
 import pandas as pd
 import time
-
+import neural_network as NN
 from commonfunctions import *
 from scipy import stats
 
@@ -28,10 +28,14 @@ def save_letters_to_csv(letter):
         writer = csv.writer(file)
         writer.writerow(concat)
 
-def pandasCSVHandler(fileName,chunkSize):
+def pandasCSVHandler(fileName,chunkSize,model):
     print("Started Chuncking!")
+    FinalListForWriting = []
     for chunk in pd.read_csv(fileName,chunksize=chunkSize):
-        print(chunk)
+        c = np.array(chunk)
+        FinalListForWriting.append(NN.TestNN(model,c[0,:]))
+    
+    return FinalListForWriting
 
 def write_prediction_to_txt(words):
     '''
@@ -70,12 +74,12 @@ def main():
 
     test(path, number_of_files)
     
-    pandasCSVHandler("image_label_pair_TEST.csv", 1000)
+    AllWordsConcated = pandasCSVHandler("image_label_pair_TEST.csv", 1) #I won't know where the end of the word is
 
     # write_prediction_to_txt(words)
 
     print("Running Time In Seconds: {0:.3f}".format(time.time() - start_time))
 
 
-# main()
-write_prediction_to_txt([["أ","ح","م","د",], ["ع","م","ر","و"], ["ح","س","ي","ن"]])
+main()
+#write_prediction_to_txt([["أ","ح","م","د",], ["ع","م","ر","و"], ["ح","س","ي","ن"]])

@@ -79,9 +79,9 @@ def returnToArabicDictionary():
     return D
 
 def saveLettersToImages(letter,label):
-    resized = cv2.resize(letter, (28,28), interpolation = cv2.INTER_AREA)
-    # VP = FE.getVerticalProjection(resized)
-    # HP = FE.getHorizontalProjection(resized)
+    letter = cv2.resize(letter, (28,28), interpolation = cv2.INTER_AREA)
+    # VP = FE.getVerticalProjection(letter)
+    # HP = FE.getHorizontalProjection(letter)
     VP_ink,HP_ink = FE.Black_ink_histogram(letter)
     Com1,Com2 = FE.Center_of_mass(letter)
     CC = FE.Connected_Component(letter)
