@@ -1,6 +1,6 @@
-Pattern Data Set/
+*.png
 *.pyc
+*.txt
 .vscode/settings.json
-tempCodeRunnerFile.py
-Dataset/
+Pattern Data Set/
 *.csv

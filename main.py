@@ -1,12 +1,14 @@
-import cv2
 import csv
-import time
+import cv2
+import dataset_creator as DC
+import feature_extractor as FE
 import glob
 import numpy as np
+import os
 import read_files as RF
-import feature_extractor as FE
-import dataset_creator as DC
- 
+import time
+import platform
+
 from scipy import stats
 from commonfunctions import *
 
@@ -18,17 +20,22 @@ start_time = time.time()
 
 #WIP
 def ReadAndSegment(ii):
-    Path = './Pattern Data Set/scanned/'
-    textPath = './Pattern Data Set/text/'
+    Path = './Test Data Set/'
+    textPath = './Test Data Set/'
     
-    Number_Of_Files = 1000
+    Number_Of_Files = 12800
     #Number_Of_Files = 1           
     gen =  glob.iglob(Path+ "*.png")
     for i in range(Number_Of_Files):
         py = next(gen)
         input_image = cv2.imread(py)
-        splitted = py.split("\\")
-        splitted = splitted[1].split(".")
+        splitted = None
+        if platform.system() == "Windows":
+            splitted = py.split("\\")
+            splitted = splitted[1].split(".")
+        else:
+            splitted = py.split("/")
+            splitted = splitted[3].split(".")
         splitted = splitted[0]
         splitted += ".txt"
         list_of_letters = RF.read_text_file(textPath,splitted)
@@ -40,10 +47,7 @@ def ReadAndSegment(ii):
 
 j = 0        
 ReadAndSegment(j)
-# reading from file for features
-# Path = './Test Data Set/'
-# Name = 'image_label_pair.csv'
-# VP_HP_list, labels_list = RF.read_features_from_file(Path,Name)
+
 
 
 print("Running Time In Seconds: {0:.3f}".format(time.time() - start_time))

@@ -42,22 +42,73 @@ def createArabicDictionary():
     D['ه'] = 25
     D['و'] = 26
     D['ي'] = 27
-    D['لا'] = 29
+    D['لا'] = 28
+    return D
+
+def returnToArabicDictionary():
+    D = {}
+    D[0] = 'ا'
+    D[1] = 'ب'
+    D[2] = 'ت'
+    D[3] = 'ث'
+    D[4] = 'ج'
+    D[5] = 'ح'
+    D[6] = 'خ'
+    D[7] = 'د'
+    D[8] = 'ذ'
+    D[9] = 'ر'
+    D[10] = 'ز'
+    D[11] = 'س'
+    D[12] = 'ش'
+    D[13] = 'ص'
+    D[14] = 'ض'
+    D[15] = 'ط'
+    D[16] = 'ظ'
+    D[17] = 'ع'
+    D[18] = 'غ'
+    D[19] = 'ف'
+    D[20] = 'ق'
+    D[21] = 'ك'
+    D[22] = 'ل'
+    D[23] = 'م'
+    D[24] = 'ن'
+    D[25] = 'ه'
+    D[26] = 'و'
+    D[27] = 'ي'
+    D[28] = 'لا'
     return D
 
 def saveLettersToImages(letter,label):
     resized = cv2.resize(letter, (28,28), interpolation = cv2.INTER_AREA)
-    VP = FE.getVerticalProjection(resized)
-    HP = FE.getHorizontalProjection(resized)
-    concat = np.concatenate((VP, HP), axis=0)
-    concat = concat.tolist()
+    # VP = FE.getVerticalProjection(resized)
+    # HP = FE.getHorizontalProjection(resized)
+    VP_ink,HP_ink = FE.Black_ink_histogram(letter)
+    Com1,Com2 = FE.Center_of_mass(letter)
+    CC = FE.Connected_Component(letter)
+    r1,r2,r3,r4,r5,r6,r7,r8,r9,r10 = FE.ratiosBlackWhite(letter)
+    hw = FE.height_over_width(letter)
+    concat = [*VP_ink, *HP_ink]
+    concat.append(Com1)
+    concat.append(Com2)
+    concat.append(CC)
+    concat.append(r1)
+    concat.append(r2)
+    concat.append(r3)
+    concat.append(r4)
+    concat.append(r5)
+    concat.append(r6)
+    concat.append(r7)
+    concat.append(r8)
+    concat.append(r9)
+    concat.append(r10)
+    concat.append(hw)
+    # concat = np.concatenate((VP_ink, HP_ink,Com1,Com2,CC,r1,r2,r3,r4,r5,r6,r7,r8,r9,r10, hw), axis=0)
     concat.append(label)
-    #cv2.imwrite('./Dataset/{}.png'.format(str(label)), letter)
+    print(concat)
     with open("image_label_pair.csv", 'a', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(concat)
-
-#WIP    
+  
 def checkNumberOfSeparations(wordSeparationList,lettersOfWordList): #Expecting an ndarray and a list
     '''
     wordSeaparationList = single word segmentation
@@ -91,15 +142,3 @@ def createDataSet(images,labels):
                 saveLettersToImages(word[j], label)
                 j+=1
         i += 1
-
-
-
-# img = cv2.imread("./Test Data Set/csep1638.png")
-# all_words = FE.extractSeparateLettersWholeImage(img)
-# # print(all_words)
-# ShowImageCV2(all_words[10])
-# path = './Test Data Set/'
-# fileName = 'csep1638.txt'
-# lis = read_text_file(path,fileName)
-# print(lis[10])
-# createDataSet(D,all_words,lis)
