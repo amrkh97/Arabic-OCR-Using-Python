@@ -167,6 +167,12 @@ def extractSeparateLettersWholeImage(input_image):
 
 #####################
 #Abdelgawad
+def Gabor_filter (img):
+    g_kernel = cv2.getGaborKernel((21, 21), 8.0, np.pi/4, 10.0, 0.5, 0, ktype=cv2.CV_32F)
+    filtered_img = cv2.filter2D(img, cv2.CV_8UC3, g_kernel)
+    filtered_img = np.array(filtered_img)
+    features = filtered_img.flatten()
+
 #####################
 
 
@@ -187,4 +193,20 @@ def Center_of_mass(letters):
 
 #####################
 #Salah
+<<<<<<< HEAD
+=======
+def ratio_of_white_over_black(image):
+    image = np.array(image)
+    unique, counts = np.unique(image, return_counts=True)
+    dictionary = dict(zip(unique, counts))
+    return dictionary[1]/dictionary[0]
+
+def height_over_width(image):
+    image = np.array(image)
+    return image.shape[0]/image.shape[1]
+
+def number_of_transitions(image):
+    image = np.array(image)
+    return
+>>>>>>> 67edc6f5afc4068a9ada6c9bce50894a9ab9a9e4
 #####################
