@@ -4,7 +4,8 @@ import numpy as np
 from scipy import stats
 from imutils import contours
 from commonfunctions import *
-
+from skimage.measure import regionprops
+import glob
 def returnToBGR(image):
     return cv2.cvtColor(image,cv2.COLOR_GRAY2RGB)
 
@@ -177,6 +178,16 @@ def Gabor_filter (img):
 
 #####################
 #Mufeed
+def Center_of_mass(letters):
+    properties = regionprops(letters, letters)
+    center_of_mass = properties[0].centroid
+    weighted_center_of_mass = properties[0].weighted_centroid
+    return (center_of_mass[1]/letters.shape[0]), (center_of_mass[0]/letters.shape[1]) 
+    # fig, ax = plt.subplots()
+    # ax.imshow(letters)
+    # # Note the inverted coordinates because plt uses (x, y) while NumPy uses (row, column)
+    # ax.scatter(center_of_mass[1], center_of_mass[0], s=160, c='C0', marker='+')
+    # plt.show()
 #####################
 
 

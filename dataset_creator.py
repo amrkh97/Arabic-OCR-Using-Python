@@ -47,7 +47,7 @@ def createArabicDictionary():
 
 def saveLettersToImages(letter,label):
     resized = cv2.resize(letter, (28,28), interpolation = cv2.INTER_AREA)
-    
+    FE.Center_of_mass(letter)
     VP = FE.getVerticalProjection(resized)
     HP = FE.getHorizontalProjection(resized)
     concat = np.concatenate((VP, HP), axis=0)

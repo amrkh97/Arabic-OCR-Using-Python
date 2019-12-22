@@ -3,7 +3,7 @@ import cv2
 import csv
 import numpy as np
 import pandas as pd
-import neural_network as NN
+#import neural_network as NN
 from io import StringIO
 
 
@@ -44,7 +44,7 @@ def processChunkToTrain(chunk,model):
     finalList2 = zip(featuresList, labelsList)
     finalList3 = zip(featuresList, labelsList)
     
-    NN.TrainNN(model,finalList,finalList2,finalList3)
+    #NN.TrainNN(model,finalList,finalList2,finalList3)
     print("Ended Training the chunk!")    
 
 def pandasCSVHandler(model,fileName,chunkSize):
