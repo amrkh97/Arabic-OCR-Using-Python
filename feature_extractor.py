@@ -6,6 +6,7 @@ from imutils import contours
 from commonfunctions import *
 from skimage.measure import regionprops
 import glob
+
 def returnToBGR(image):
     return cv2.cvtColor(image,cv2.COLOR_GRAY2RGB)
 
@@ -277,7 +278,6 @@ def divide_image_to_four_regions(image):
 #####################
 def ratiosBlackWhite(letter):
     r1,r2,r3,r4 = divide_image_to_four_regions(letter)
-    fig, ax = plt.subplots()
     f1  = ratio_of_colors(r1,r1,0,1)
     f2  = ratio_of_colors(r2,r2,0,1)
     f3  = ratio_of_colors(r3,r3,0,1)
