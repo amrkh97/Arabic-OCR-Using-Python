@@ -182,7 +182,6 @@ def Gabor_filter (img):
 
 #####################
 #Salah
-#####################
 def ratio_of_white_over_black(image):
     image = np.array(image)
     unique, counts = np.unique(image, return_counts=True)
@@ -195,4 +194,5 @@ def height_over_width(image):
 
 def number_of_transitions(image):
     image = np.array(image)
-    pass
+    return
+#####################
