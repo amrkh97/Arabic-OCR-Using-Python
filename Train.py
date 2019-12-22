@@ -16,7 +16,7 @@ from commonfunctions import *
 start_time = time.time()
 
 chunkSize = 1000 #Read 1000 lines at a time to handle memory restrictions and errors
-inputSize =  55  #Size of feature file
+inputSize =  72  #Size of feature file
 
 div = torch.device('cuda')
 model = NN.createNN(inputSize)
