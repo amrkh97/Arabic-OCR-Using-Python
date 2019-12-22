@@ -199,7 +199,7 @@ def Black_ink_histogram(letter):# check needed
 
 #####################
 #Salah
-def ratio_of_white_over_black(region1, region2, color1, color2):
+def ratio_of_colors(region1, region2, color1, color2):
     '''
     Gets ratios between 2 regions
     color1 = 0, 1
@@ -207,6 +207,7 @@ def ratio_of_white_over_black(region1, region2, color1, color2):
     0 --> black
     1 --> white
     '''
+    
     region1 = np.array(region1)
     region2 = np.array(region2)
 
@@ -216,13 +217,20 @@ def ratio_of_white_over_black(region1, region2, color1, color2):
     required1 = None
     required2 = None
     if color1 == 0:
-        required1 = (region1[region1 == 0]).shape[0]
+        required1 = region1[region1 == 0]
+        required1 = required1.shape[0]
     else:
-        required1 = (region1[region1 == 1]).shape[0]
+        required1 = region1[region1 == 1]
+        required1 = required1.shape[0]
     if color2 == 0:
-        required2 = (region2[region2 == 0]).shape[0]
+        required2 = region2[region2 == 0]
+        required2 = required2.shape[0]
     else:
-        required2 = (region2[region2 == 1]).shape[0]
+        required2 = region2[region2 == 1]
+        required2 = required2.shape[0]
+
+    if required2 == 0:
+        return float('nan')
 
     return required1/required2
 
@@ -246,3 +254,19 @@ def divide_image_to_four_regions(image):
 
     return first_region, second_region, third_region, fourth_region
 #####################
+def ratiosBlackWhite(letter):
+    r1,r2,r3,r4 = divide_image_to_four_regions(letter)
+    fig, ax = plt.subplots()
+    f1  = ratio_of_colors(r1,r1,0,1)
+    f2  = ratio_of_colors(r2,r2,0,1)
+    f3  = ratio_of_colors(r3,r3,0,1)
+    f4  = ratio_of_colors(r4,r4,0,1)
+
+    f5  = ratio_of_colors(r1,r2,0,0)
+    f6  = ratio_of_colors(r3,r4,0,0)
+    f7  = ratio_of_colors(r1,r3,0,0)
+    f8  = ratio_of_colors(r2,r4,0,0)
+    f9  = ratio_of_colors(r1,r4,0,0)
+    f10 = ratio_of_colors(r2,r3,0,0)
+
+    return f1,f2,f3,f4,f5,f6,f7,f8,f9,f10
