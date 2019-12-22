@@ -174,8 +174,6 @@ def Gabor_filter (img):
     features = filtered_img.flatten()
     return features
 
-
-
 def horizontal_transitions(img):
     horizontal_transition_count = 0
     col_found_in = {}
@@ -185,7 +183,6 @@ def horizontal_transitions(img):
                 col_found_in[c] = 1
                 horizontal_transition_count+=1
     return horizontal_transition_count
-
 
 def vertcial_transisions (img):
     vertical_transition_count = 0
@@ -197,56 +194,12 @@ def vertcial_transisions (img):
                 vertical_transition_count+=1
     return vertical_transition_count
 
-
-
 def number_of_transitions(img):
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    #img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     ht = horizontal_transitions(img)    
     vt = vertcial_transisions(img)
     return ht,vt
-    # img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    # # img = cv2.resize(img, (28,28), interpolation = cv2.INTER_AREA)
 
-    # horizontal_transition_count = 0
-    # vertical_transition_count = 0
-    # ones_indices = np.argwhere (img == 0)
-    # zeros_indices = np.argwhere ( img == 255)
-    # print(zeros_indices[:,0] == ones_indices[:,0])
-    # same_rows = zeros_indices[zeros_indices[:,0] == ones_indices[:,0]]
-
-
-
-
-
-    # columns_of_zeros = zeros_indices[:,1]
-    # diff_columns_of_zeros = np.diff(columns_of_zeros)
-    # nonones_diff_columns_of_zeros = np.array(np.where(diff_columns_of_zeros != 1))
-    # horizontal_transition_count = nonones_diff_columns_of_zeros.shape[1]
-    # rows_of_zeros = zeros_indices[:,0]
-    # colums_of_zeros_distinct  = np.unique(columns_of_zeros)
-    # # rows_distinct = np.unique(rows_distinct)
-    # print(ones_indices)
-    # print("*******************************")
-    # print(zeros_indices)
-    # print("*********************************")
-    # print(same_rows)
-    # # print(colums_distinct)
-    # # first_diff = np.diff(colums_distinct)
-    # # if first_diff.all() == 1:
-    # #     horizontal_transition_count = 1
-    # # else:
-    # #     second_diff = np.diff(first_diff)
-    # #     horizontal_transition_count = np.count_nonzero(second_diff)
-    # # print(horizontal_transition_count)
-    # # privious_horizontal_pixel = img[0,0]
-    # # privious_vertical_pixel = img[0,0]
-    # # for pixel in range(1 , img.shape[0]):
-    # #     if img[pixel,]
-
-#####################
-
-
-#####################
 #Mufeed
 def Center_of_mass(letters):
     properties = regionprops(letters, letters)
