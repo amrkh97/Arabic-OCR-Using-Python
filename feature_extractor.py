@@ -188,6 +188,12 @@ def Center_of_mass(letters):
     # # Note the inverted coordinates because plt uses (x, y) while NumPy uses (row, column)
     # ax.scatter(center_of_mass[1], center_of_mass[0], s=160, c='C0', marker='+')
     # plt.show()
+def Black_ink_histogram(letter):# check needed
+    VP = getVerticalProjection(letter)
+    VP_ink = [VP[i*len(VP)//20] for i in range(20)]
+    HP = getHorizontalProjection(letter)
+    HP_ink = [HP[i*len(HP)//20] for i in range(20)]
+    return VP_ink, HP_ink
 #####################
 
 
