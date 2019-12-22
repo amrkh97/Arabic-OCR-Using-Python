@@ -182,17 +182,50 @@ def Gabor_filter (img):
 
 #####################
 #Salah
-def ratio_of_white_over_black(image):
-    image = np.array(image)
-    unique, counts = np.unique(image, return_counts=True)
-    dictionary = dict(zip(unique, counts))
-    return dictionary[1]/dictionary[0]
+def ratio_of_white_over_black(region1, region2, color1, color2):
+    '''
+    Gets ratios between 2 regions
+    color1 = 0, 1
+    color2 = 0, 1
+    0 --> black
+    1 --> white
+    '''
+    region1 = np.array(region1)
+    region2 = np.array(region2)
+
+    region1 = region1.flatten()
+    region2 = region2.flatten()
+
+    required1 = None
+    required2 = None
+    if color1 == 0:
+        required1 = (region1[region1 == 0]).shape[0]
+    else:
+        required1 = (region1[region1 == 1]).shape[0]
+    if color2 == 0:
+        required2 = (region2[region2 == 0]).shape[0]
+    else:
+        required2 = (region2[region2 == 1]).shape[0]
+
+    return required1/required2
 
 def height_over_width(image):
     image = np.array(image)
     return image.shape[0]/image.shape[1]
 
-def number_of_transitions(image):
+def divide_image_to_four_regions(image):
     image = np.array(image)
-    return
+    img_cols = image.shape[1]
+    img_rows = image.shape[0]
+    
+    mid_col = img_cols//2
+    mid_row = img_rows//2
+
+    first_region  = image[0:mid_row,0:mid_col]
+    second_region = image[0:mid_row,mid_col:]
+
+    third_region  = image[mid_row+1:,0:mid_col+1]
+    fourth_region = image[mid_row+1:,mid_col+1:]
+
+    return first_region, second_region, third_region, fourth_region
 #####################
