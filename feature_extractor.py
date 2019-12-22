@@ -218,13 +218,13 @@ def ratio_of_colors(region1, region2, color1, color2):
         required1 = region1[region1 == 0]
         required1 = required1.shape[0]
     else:
-        required1 = region1[region1 == 1]
+        required1 = region1[region1 == 255]
         required1 = required1.shape[0]
     if color2 == 0:
         required2 = region2[region2 == 0]
         required2 = required2.shape[0]
     else:
-        required2 = region2[region2 == 1]
+        required2 = region2[region2 == 255]
         required2 = required2.shape[0]
 
     if required2 == 0:
@@ -268,3 +268,11 @@ def ratiosBlackWhite(letter):
     f10 = ratio_of_colors(r2,r3,0,0)
 
     return f1,f2,f3,f4,f5,f6,f7,f8,f9,f10
+
+def count_holes(img, num_connected_parts):  # count number of holes in each character
+    contours, hierarchy = cv2.findContours(img, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+    if len(contours) == 0:
+        return 0
+    elif abs(len(contours) - (num_connected_parts-1)) < 0:
+        return 0
+    return abs(len(contours) - (num_connected_parts-1))

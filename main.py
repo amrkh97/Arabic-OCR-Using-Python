@@ -20,7 +20,7 @@ start_time = time.time()
 
 #WIP
 def ReadAndSegment(ii):
-    Path = './Test Data Set/'
+    Path = './Dataset/'
     textPath = './Test Data Set/'
     
     Number_Of_Files = 12800

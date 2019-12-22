@@ -85,6 +85,7 @@ def saveLettersToImages(letter,label):
     VP_ink,HP_ink = FE.Black_ink_histogram(letter)
     Com1,Com2 = FE.Center_of_mass(letter)
     CC = FE.Connected_Component(letter)
+    CH = FE.count_holes(letter,CC)
     r1,r2,r3,r4,r5,r6,r7,r8,r9,r10 = FE.ratiosBlackWhite(letter)
     hw = FE.height_over_width(letter)
     concat = [*VP_ink, *HP_ink]
@@ -102,6 +103,7 @@ def saveLettersToImages(letter,label):
     concat.append(r9)
     concat.append(r10)
     concat.append(hw)
+    concat.append(CH)
     # concat = np.concatenate((VP_ink, HP_ink,Com1,Com2,CC,r1,r2,r3,r4,r5,r6,r7,r8,r9,r10, hw), axis=0)
     concat.append(label)
     print(concat)
