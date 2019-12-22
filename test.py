@@ -63,20 +63,20 @@ def pandasCSVHandler(fileName,chunkSize,model):
     
     return FinalListForWriting
 
-def write_prediction_to_txt(words):
+def write_prediction_to_txt(word):
     '''
-    words 2D Array
+    words 1D Array
     '''
-    if os.path.exists("predictions.txt"):
-        os.remove("predictions.txt")
     file = open("predictions.txt","w",encoding='utf-8')
     
-    for word in words:
+    # for word in words:
         #for letter in word:
             #file.write(letter)
         #file.write(" ")
-        file.write(word)
+        # file.write(word)
         #file.write(" ")
+    file.write(word)
+    file.write(" ")
     file.close()
     
     # Open file to user
@@ -84,7 +84,9 @@ def write_prediction_to_txt(words):
 
 ###################################################################
 
-def test(path, number_of_files):
+def test(path, number_of_files, model):
+    if os.path.exists("image_label_pair_TEST.csv"):
+        os.remove("image_label_pair_TEST.csv")
     gen = glob.iglob(path + "*.png")
     for i in range(number_of_files):
         py = next(gen)
@@ -93,19 +95,20 @@ def test(path, number_of_files):
         for word in all_words:
             for letter in word:
                 save_letters_to_csv(letter)
+            # Single Word
+            FinalListForWriting = pandasCSVHandler("image_label_pair_TEST.csv", 1, model)
+            write_prediction_to_txt(FinalListForWriting)
 
 def main():
     start_time = time.time()
 
     path = './Pattern Data Set/scanned/'
     number_of_files = 1
-
-    test(path, number_of_files)
-    
     model = NN.createNN(56)
     model.load_state_dict(torch.load('trained_model.pth'))
     model.eval() 
     
+    test(path, number_of_files, model)
     
     AllWordsConcated = pandasCSVHandler("test.csv", 1,model) #I won't know where the end of the word is
     print(AllWordsConcated)
@@ -115,4 +118,4 @@ def main():
 
 
 main()
-#write_prediction_to_txt([["أ","ح","م","د",], ["ع","م","ر","و"], ["ح","س","ي","ن"]])
+# write_prediction_to_txt([["أ","ح","م","د",], ["ع","م","ر","و"], ["ح","س","ي","ن"]])
