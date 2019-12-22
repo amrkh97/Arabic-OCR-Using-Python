@@ -164,3 +164,17 @@ def extractSeparateLettersWholeImage(input_image):
             all_words.append(SegmentedWord)
     return all_words   
 
+#####################
+#Abdelgawad
+#####################
+
+
+#####################
+#Mufeed
+#####################
+
+
+#####################
+#Salah
+#####################
+
