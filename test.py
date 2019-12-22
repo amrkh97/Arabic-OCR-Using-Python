@@ -46,9 +46,11 @@ def write_prediction_to_txt(words):
     file = open("predictions.txt","w",encoding='utf-8')
     
     for word in words:
-        for letter in word:
-            file.write(letter)
-        file.write(" ")
+        #for letter in word:
+            #file.write(letter)
+        #file.write(" ")
+        file.write(word)
+        #file.write(" ")
     file.close()
     
     # Open file to user
