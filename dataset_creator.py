@@ -109,7 +109,6 @@ def saveLettersToImages(letter,label):
     concat.append(hw) #1
     
     concat.append(label)
-    print(concat)
     with open("image_label_pair.csv", 'a', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(concat)
