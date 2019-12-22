@@ -183,11 +183,7 @@ def Center_of_mass(letters):
     center_of_mass = properties[0].centroid
     weighted_center_of_mass = properties[0].weighted_centroid
     return (center_of_mass[1]/letters.shape[0]), (center_of_mass[0]/letters.shape[1]) 
-    # fig, ax = plt.subplots()
-    # ax.imshow(letters)
-    # # Note the inverted coordinates because plt uses (x, y) while NumPy uses (row, column)
-    # ax.scatter(center_of_mass[1], center_of_mass[0], s=160, c='C0', marker='+')
-    # plt.show()
+    
 def Black_ink_histogram(letter):# check needed
     VP = getVerticalProjection(letter)
     VP_ink = [VP[i*len(VP)//20] for i in range(20)]
@@ -198,22 +194,6 @@ def Black_ink_histogram(letter):# check needed
 def Connected_Component(letter):
     ret, labels, stats,center = cv2.connectedComponentsWithStats(letter)
     return ret
-# def imshow_components(labels):
-#     # Map component labels to hue val
-#     label_hue = np.uint8(179*labels/np.max(labels))
-#     blank_ch = 255*np.ones_like(label_hue)
-#     labeled_img = cv2.merge([label_hue, blank_ch, blank_ch])
-
-#     # cvt to BGR for display
-#     labeled_img = cv2.cvtColor(labeled_img, cv2.COLOR_HSV2BGR)
-
-#     # set bg label to black
-#     labeled_img[label_hue==0] = 0
-
-#     cv2.imshow('labeled.png', labeled_img)
-#     cv2.waitKey()
-#####################
-
 
 #####################
 #Salah
