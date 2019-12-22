@@ -15,7 +15,7 @@ from commonfunctions import *
 
 start_time = time.time()
 
-chunkSize = 10000 #Read 5000 lines at a time to handle memory restrictions and errors
+chunkSize = 1000 #Read 1000 lines at a time to handle memory restrictions and errors
 inputSize =  55  #Size of feature file
 
 div = torch.device('cuda')
