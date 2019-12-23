@@ -1,0 +1,7 @@
+*.png
+*.pyc
+*.txt
+.vscode/settings.json
+Pattern Data Set/
+*.csv
+.txt
