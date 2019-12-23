@@ -106,7 +106,9 @@ def main():
     number_of_files = 1
     model = NN.createNN(56)
     model.load_state_dict(torch.load('trained_model.pth'))
-    model.eval() 
+    model.eval()
+     
+    test(path, number_of_files)
     
     test(path, number_of_files, model)
     

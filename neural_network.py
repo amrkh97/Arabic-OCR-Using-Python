@@ -8,15 +8,15 @@ from torch import optim
 
 def createNN(_inputSize):
     input_size = _inputSize
-    hidden_sizes = 45 # 30 nodes in first hidden layer
+    hidden_sizes = 12 # 12 nodes in first hidden layer
     output_size = 29 # Number of possible outputs
 
     model = nn.Sequential(nn.Linear(input_size, hidden_sizes),
                           nn.ReLU(),
-                          nn.Dropout(0.5),
+                          #nn.Dropout(0.5),
                           #nn.Linear(hidden_sizes[0], hidden_sizes[1]),
                           #nn.ReLU(),
-                          #nn.Dropout(0.5),
+                          #nn.Dropout(0.3),
                           nn.Linear(hidden_sizes, output_size))
     return model
 
