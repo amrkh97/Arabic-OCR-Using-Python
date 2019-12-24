@@ -20,10 +20,12 @@ start_time = time.time()
 
 #WIP
 def ReadAndSegment(ii):
-    Path = './Test Data Set/'
-    textPath = './Test Data Set/'
+    if os.path.exists("image_label_pair.csv"):
+        os.remove("image_label_pair.csv")
+    Path = './Pattern Data Set/scanned/'
+    textPath = './Pattern Data Set/text/'
     
-    Number_Of_Files = 12800
+    Number_Of_Files = 4000
     #Number_Of_Files = 1           
     gen =  glob.iglob(Path+ "*.png")
     for i in range(Number_Of_Files):

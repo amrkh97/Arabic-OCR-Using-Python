@@ -16,11 +16,11 @@ from commonfunctions import *
 start_time = time.time()
 
 chunkSize = 1000 #Read 1000 lines at a time to handle memory restrictions and errors
-inputSize =  55  #Size of feature file
+inputSize =  17  #Size of feature file
 
-div = torch.device('cuda')
+#div = torch.device('cuda')
 model = NN.createNN(inputSize)
-model = model.to(device=div)
+#model = model.to(device=div)
 RF.pandasCSVHandler(model,'image_label_pair.csv',chunkSize)
 
 print("Running Time In Seconds: {0:.3f}".format(time.time() - start_time))

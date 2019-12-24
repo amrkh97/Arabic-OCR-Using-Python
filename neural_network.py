@@ -4,28 +4,29 @@ import torch.nn.functional as F
 import dataset_creator as DC
 from torch import nn
 from torch import optim
+# import keras
 
 
 def createNN(_inputSize):
     input_size = _inputSize
-    hidden_sizes = 35 # 30 nodes in first hidden layer
+    hidden_sizes = [15,10] # 12 nodes in first hidden layer
     output_size = 29 # Number of possible outputs
 
-    model = nn.Sequential(nn.Linear(input_size, hidden_sizes),
+    model = nn.Sequential(nn.Linear(input_size, hidden_sizes[0]),
                           nn.ReLU(),
-                          nn.Dropout(0.5),
+                          #nn.Dropout(0.2),
                           #nn.Linear(hidden_sizes[0], hidden_sizes[1]),
                           #nn.ReLU(),
-                          nn.Linear(hidden_sizes, output_size))
+                          #nn.Dropout(0.3),
+                          nn.Linear(hidden_sizes[0], output_size))
     return model
 
 def convert2tensor(x):
-    print(x)
-    x = torch.cuda.FloatTensor(x)
+    x = torch.FloatTensor(x)
     return x
 
 def convert2long(x):
-    x = torch.cuda.LongTensor(x)
+    x = torch.LongTensor(x)
     return x
 
 def switchLoader(e,it1,it2,it3,it4,it5):
@@ -41,8 +42,9 @@ def switchLoader(e,it1,it2,it3,it4,it5):
 def TrainNN(model,t1,t2,t3,t4,t5):
     
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.SGD(model.parameters(), lr=0.01)
-    #optimizer = optim.Adam(model.parameters(), lr=1e-5)
+    #criterion = nn.CTCLoss()
+    #optimizer = optim.SGD(model.parameters(), lr=0.01)
+    optimizer = optim.Adam(model.parameters(), lr=1e-5)
 
     epochs = 5
     print_every = 1000
@@ -60,7 +62,7 @@ def TrainNN(model,t1,t2,t3,t4,t5):
             actual_label = labels
             labels = [labels,]
             labels = convert2long(labels)
-            labels = torch.cuda.LongTensor(labels)
+            labels = torch.LongTensor(labels)
             
             optimizer.zero_grad() # Clear the gradients as gradients are accumulated
         
@@ -78,29 +80,31 @@ def TrainNN(model,t1,t2,t3,t4,t5):
             running_loss += loss.item()
             
             if steps % print_every == 0:
+                print(predicted)
+                print(labels.data)
                 print("Epoch: {}/{}... ".format(e+1, epochs),
                   "Loss: {:.4f}".format(running_loss/print_every))
         
         print("Ended Epoch.",str(e+1))
     #Saving the model after training:
-    train_accuracy = 100 * correct_train / 1000
+    train_accuracy = 100 * correct_train / 5000
     print("Train Accuracy on 1000 Elements: {}%".format(train_accuracy))
     PATH = 'trained_model.pth'
     torch.save(model.state_dict(), PATH)
     
 
 def TestNN(model,testloader):
-    images = torch.FloatTensor(testloader[:55])
-    #label = testloader[56]
+    images = torch.FloatTensor(testloader[:17])
     logits = model.forward(images)
 
-    # Output of the network are logits, need to take softmax for probabilities
     ps = F.softmax(logits, dim=0)
     ps = ps.data.numpy().squeeze()
     prediction = np.argmax(ps)
-    #print('Predicted Label is: {}, while actual is: {}'.format(prediction,label))
+    print(ps)
     D = DC.returnToArabicDictionary()
-    return D
+    return D[prediction]
+
+# def PrepareLabels():
 
 def load_checkpoint(filepath):
     model = torch.load('trained_model.pth')

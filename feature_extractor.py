@@ -6,6 +6,7 @@ from imutils import contours
 from commonfunctions import *
 from skimage.measure import regionprops
 import glob
+
 def returnToBGR(image):
     return cv2.cvtColor(image,cv2.COLOR_GRAY2RGB)
 
@@ -172,22 +173,41 @@ def Gabor_filter (img):
     filtered_img = cv2.filter2D(img, cv2.CV_8UC3, g_kernel)
     filtered_img = np.array(filtered_img)
     features = filtered_img.flatten()
+    return features
 
-#####################
+def horizontal_transitions(img):
+    horizontal_transition_count = 0
+    col_found_in = {}
+    for r in range(img.shape[0]):
+        for c in range(img.shape[1]-1):
+            if img[r,c] != img[r,c+1] and  not( c in col_found_in.keys()) :
+                col_found_in[c] = 1
+                horizontal_transition_count+=1
+    return horizontal_transition_count
 
+def vertcial_transisions (img):
+    vertical_transition_count = 0
+    row_found_in = {}
+    for c in range(img.shape[1]):
+        for r in range(img.shape[0]-1):
+            if img[r,c] != img[r+1,c] and not( r in row_found_in.keys()):
+                row_found_in[r] = 1
+                vertical_transition_count+=1
+    return vertical_transition_count
 
-#####################
+def number_of_transitions(img):
+    #img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    ht = horizontal_transitions(img)    
+    vt = vertcial_transisions(img)
+    return ht,vt
+
 #Mufeed
 def Center_of_mass(letters):
     properties = regionprops(letters, letters)
     center_of_mass = properties[0].centroid
     weighted_center_of_mass = properties[0].weighted_centroid
     return (center_of_mass[1]/letters.shape[0]), (center_of_mass[0]/letters.shape[1]) 
-    # fig, ax = plt.subplots()
-    # ax.imshow(letters)
-    # # Note the inverted coordinates because plt uses (x, y) while NumPy uses (row, column)
-    # ax.scatter(center_of_mass[1], center_of_mass[0], s=160, c='C0', marker='+')
-    # plt.show()
+    
 def Black_ink_histogram(letter):# check needed
     VP = getVerticalProjection(letter)
     VP_ink = [VP[i*len(VP)//20] for i in range(20)]
@@ -198,22 +218,6 @@ def Black_ink_histogram(letter):# check needed
 def Connected_Component(letter):
     ret, labels, stats,center = cv2.connectedComponentsWithStats(letter)
     return ret
-# def imshow_components(labels):
-#     # Map component labels to hue val
-#     label_hue = np.uint8(179*labels/np.max(labels))
-#     blank_ch = 255*np.ones_like(label_hue)
-#     labeled_img = cv2.merge([label_hue, blank_ch, blank_ch])
-
-#     # cvt to BGR for display
-#     labeled_img = cv2.cvtColor(labeled_img, cv2.COLOR_HSV2BGR)
-
-#     # set bg label to black
-#     labeled_img[label_hue==0] = 0
-
-#     cv2.imshow('labeled.png', labeled_img)
-#     cv2.waitKey()
-#####################
-
 
 #####################
 #Salah
@@ -238,17 +242,17 @@ def ratio_of_colors(region1, region2, color1, color2):
         required1 = region1[region1 == 0]
         required1 = required1.shape[0]
     else:
-        required1 = region1[region1 == 1]
+        required1 = region1[region1 == 255]
         required1 = required1.shape[0]
     if color2 == 0:
         required2 = region2[region2 == 0]
         required2 = required2.shape[0]
     else:
-        required2 = region2[region2 == 1]
+        required2 = region2[region2 == 255]
         required2 = required2.shape[0]
 
     if required2 == 0:
-        return float('nan')
+        return 0
 
     return required1/required2
 
@@ -274,7 +278,6 @@ def divide_image_to_four_regions(image):
 #####################
 def ratiosBlackWhite(letter):
     r1,r2,r3,r4 = divide_image_to_four_regions(letter)
-    fig, ax = plt.subplots()
     f1  = ratio_of_colors(r1,r1,0,1)
     f2  = ratio_of_colors(r2,r2,0,1)
     f3  = ratio_of_colors(r3,r3,0,1)
@@ -288,3 +291,11 @@ def ratiosBlackWhite(letter):
     f10 = ratio_of_colors(r2,r3,0,0)
 
     return f1,f2,f3,f4,f5,f6,f7,f8,f9,f10
+
+def count_holes(img, num_connected_parts):  # count number of holes in each character
+    contours, hierarchy = cv2.findContours(img, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+    if len(contours) == 0:
+        return 0
+    elif abs(len(contours) - (num_connected_parts-1)) < 0:
+        return 0
+    return abs(len(contours) - (num_connected_parts-1))
